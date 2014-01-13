@@ -1,0 +1,39 @@
+html, body {
+    height: 100%;
+}
+
+code {
+    color: #000
+}
+
+#wrap {
+    position: relative;
+    min-height: 100%;
+}
+
+#wrap > .container-fluid {
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
+
+#footer {
+    padding: 9px 40px 10px 40px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    color: #999;
+    position: absolute;
+    background-color: #f6f6f6;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+@media (max-width: 979px) {
+    body {
+        padding-top: 0
+    }
+
+    #footer {
+        position: static;
+    }
+}

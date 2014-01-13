@@ -1,0 +1,20 @@
+Django>=1.5,<1.6
+
+# Database Drivers, the Python stdlib has support for SQLite
+psycopg2
+# cx_oracle
+# mysql-python
+
+# WSGI server
+# uWSGI
+
+# Deployment with fabfile.py
+# Fabric
+
+# Harvest components
+serrano==2.2.0
+
+# Harvest extensions
+django-haystack==1.2.7
+Whoosh==2.4.0
+openpyxl
