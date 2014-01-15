@@ -283,8 +283,8 @@ SITE_ID = 1
 # ModelTrees Configuration
 #
 
-# MODELTREES = {
-#     'default': {
-#         'model': '',
-#     }
-# }
+MODELTREES = {
+    'default': {
+        'model': 'Person',
+    }
+}

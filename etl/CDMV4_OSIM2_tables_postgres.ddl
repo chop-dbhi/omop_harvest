@@ -297,7 +297,6 @@ CREATE TABLE omop_drug_era
      drug_era_end_date DATE  NOT NULL , 
      drug_type_concept_id INTEGER  NOT NULL , 
      drug_exposure_count NUMERIC (4) ,
-     drug_exposure_type INTEGER 
     ) 
 ;
 
@@ -950,33 +949,6 @@ CREATE INDEX omop_visit_occurrence_person_date_idx ON omop_visit_occurrence
      person_id ASC , 
      visit_start_date ASC 
     ) 
-;
-
-
-CREATE TABLE omop_drug_exposure_type 
-    ( 
-     drug_exposure_type INTEGER  PRIMARY KEY , 
-     drug_exposure_type_desc VARCHAR (256) , 
-     persistence_window INTEGER  NOT NULL 
-    ) 
-;
-
-
-
-COMMENT ON TABLE omop_drug_exposure_type IS 'Deprecated CDMV2 table that defines drug exposure types and their descriptions.'
-;
-
-
-COMMENT ON COLUMN omop_drug_exposure_type.drug_exposure_type IS 'Unique identifier for a drug exposure type.' 
-;
-
-COMMENT ON COLUMN omop_drug_exposure_type.drug_exposure_type_desc IS 'Description of the drug exposure type.' 
-;
-
-COMMENT ON COLUMN omop_drug_exposure_type.persistence_window IS 'Number of days over which the drug exposures occurred, making up a drug era.' 
-;
-
-COMMENT ON COLUMN omop_visit_occurrence.visit_end_date IS 'The end date of the visit. If this is a one-day visit the end date should match the start date.' 
 ;
 
 
