@@ -8,7 +8,7 @@ from fabric.contrib.console import confirm
 from fabric.contrib.files import exists
 
 
-HOSTS_MESSAGE = """\
+__doc__ = """\
 Before using this fabfile, you must create a .fabhosts in your project
 directory. It is a JSON file with the following structure:
 
@@ -49,7 +49,7 @@ hosts_file = os.path.join(curdir, '.fabhosts')
 
 # Check for the .fabhosts file
 if not os.path.exists(hosts_file):
-    abort(white(HOSTS_MESSAGE))
+    abort(white(__doc__))
 
 base_settings = {
     'host_string': '',
@@ -83,21 +83,19 @@ def get_hosts_settings():
     # Validate all hosts have an entry in the .hosts file
     for target in env.hosts:
         if target not in hosts:
-            abort(red('Error: No settings have been defined for the "{0}" host'.format(target)))
+            abort(red('Error: No settings have been defined for the "{}" host'.format(target)))
         settings = hosts[target]
         for key in required_settings:
             if not settings[key]:
-                abort(red('Error: The setting "{0}" is not defined for "{1}" host'.format(key, target)))
+                abort(red('Error: The setting "{}" is not defined for "{}" host'.format(key, target)))
     return hosts
-
-
-hosts = get_hosts_settings()
 
 
 def host_context(func):
     "Sets the context of the setting to the current host"
     @wraps(func)
     def decorator(*args, **kwargs):
+        hosts = get_hosts_settings()
         with settings(**hosts[env.host]):
             return func(*args, **kwargs)
     return decorator
@@ -110,23 +108,46 @@ def merge_commit(commit):
         run('git fetch')
         if '@' in commit:
             branch, commit = commit.split('@')
-            run('git checkout {0}'.format(branch))
-        run('git merge {0}'.format(commit))
-        run('find . -type f | grep .pyc | xargs rm -f')
+            run('git checkout {}'.format(branch))
+        run('git merge {}'.format(commit))
 
 
 @host_context
-def syncdb_migrate():
-    "Syncs and migrates the database using South."
-    verun('./bin/manage.py syncdb --migrate')
+def current_commit():
+    with cd(env.path):
+        run('git log -1')
+        run('git status')
 
+
+@host_context
+def migrate(app_name=None, revision=None):
+    "Syncs and migrates the database using South."
+    cmd = ['python bin/manage.py syncdb --migrate']
+    verun('uname')
+    if app_name:
+        cmd.append(app_name)
+        if revision:
+            cmd.append(revision)
+    verun(' '.join(cmd))
+
+@host_context
+def collect_static():
+    "Run Django's collectstatic utility."
+    cmd = 'python bin/manage.py collectstatic --noinput'
+    verun(cmd)
+
+@host_context
+def rebuild_index():
+    "Run Django's collectstatic utility."
+    cmd = 'python bin/manage.py rebuild_index --noinput'
+    verun(cmd)
 
 @host_context
 def symlink_nginx():
     "Symlinks the nginx config to the host's nginx conf directory."
     with cd(env.path):
-        run('ln -sf $PWD/server/nginx/{host}.conf '
-            '{nginx_conf_dir}/omop_harvest-{host}.conf'.format(**env))
+        sudo('ln -sf $PWD/server/nginx/{host}.conf '
+            '{nginx_conf_dir}/cbttc-{host}.conf'.format(**env))
 
 
 @host_context
@@ -134,9 +155,8 @@ def reload_nginx():
     "Reloads nginx if the config test succeeds."
     symlink_nginx()
 
-    if run('nginx -t').succeeded:
-        pid = run('supervisorctl pid nginx')
-        run('kill -HUP {0}'.format(pid))
+    if sudo('/etc/init.d/nginx configtest').succeeded:
+        sudo('/etc/init.d/nginx reload')
     elif not confirm(yellow('nginx config test failed. continue?')):
         abort('nginx config test failed. Aborting')
 
@@ -145,80 +165,169 @@ def reload_nginx():
 def reload_supervisor():
     "Re-link supervisor config and force an update to supervisor."
     with cd(env.path):
-        run('ln -sf $PWD/server/supervisor/{host}.ini '
-            '{supervisor_conf_dir}/omop_harvest-{host}.ini'.format(**env))
+        sudo('ln -sf $PWD/server/supervisor/{host}.ini '
+            '{supervisor_conf_dir}/cbttc-harvest-{host}.ini'.format(**env))
     run('supervisorctl update')
 
 
 @host_context
 def reload_wsgi():
     "Gets the PID for the wsgi process and sends a HUP signal."
-    pid = run('supervisorctl pid omop_harvest-{0}'.format(env.host))
-    run('kill -HUP {0}'.format(pid))
+    if env.command == 'ci_deploy':
+        run('supervisorctl restart cbttc-harvest-development')
+    else:
+        pid = run('supervisorctl pid cbttc-harvest-{host}'.format(host=env.host))
+        try:
+            int(pid)
+            sudo('kill -HUP {}'.format(pid))
+        except (TypeError, ValueError):
+            pass
 
 
 @host_context
-def deploy(commit, force=False):
+def reload_memcached():
+    "Reloads memcached. WARNING this flushes all cache!"
+    sudo('/etc/init.d/memcached reload')
+
+@host_context
+def deploy(force=False):
     setup()
     upload_settings()
+    upload_etl_config()
     mm_on()
-    merge_commit(commit)
+    # merge_commit(commit)
     install_deps(force)
-    syncdb_migrate()
+    migrate()
     make()
+    collect_static()
+    rebuild_index()
+    symlink_nginx()
     reload_nginx()
     reload_supervisor()
     reload_wsgi()
+    if confirm(yellow('Reload memcached?')):
+        reload_memcached()
     mm_off()
 
+@host_context
+def ci_deploy():
+    print(env.host)
+    if env.host == 'test':
+        env.user = 'user001'
+        env.password = 'user001'
+    else:
+        env.host_string = "devuser@resrhtiuws06.research.chop.edu"
+        env.user = "devuser"
+        env.password = "devuser"
+    setup() 
+    upload_settings() 
+    install_deps() 
+    migrate() 
+    make() 
+    collect_static() 
+    rebuild_index() 
+    reload_wsgi()
 
 @host_context
 def make():
     "Rebuilds all static files using the Makefile."
-    with prefix('rvm use default'):
-        verun('make')
-
+    verun('make')
 
 @host_context
 def setup():
     "Sets up the initial environment."
     parent, project = os.path.split(env.path)
-
     if not exists(parent):
-        run('virtualenv {0}'.format(parent))
+        run('mkdir -p {}'.format(parent))
+        run('virtualenv {}'.format(parent))
 
     with cd(parent):
         if not exists(project):
             run('git clone {repo_url} {project}'.format(project=project, **env))
-
+            with cd(project):
+                run('git checkout {branch}'.format(**env))
+                run('git pull origin {branch}'.format(**env))
+        else:
+            with cd(project):
+                run('git checkout {branch}'.format(**env))
+                run('git pull origin {branch}'.format(**env))
 
 @host_context
 def upload_settings():
     "Uploads the non-versioned local settings to the server."
-    local_path = os.path.join(curdir, 'settings/{0}.py'.format(env.host))
-    if os.path.exists(local_path):
-        remote_path = os.path.join(env.path, 'omop_harvest/conf/local_settings.py')
-        put(local_path, remote_path)
-    elif not confirm(yellow('No local settings found for host "{0}". Continue anyway?'.format(env.host))):
-        abort('No local settings found for host "{0}". Aborting.'.format(env.host))
+    if env.host == 'integration-server':
+        local_path = os.path.join(curdir, 'settings/development.py')
+    else:
+        local_path = os.path.join(curdir, 'settings/{}.py'.format(env.host))
 
+    if os.path.exists(local_path):
+        remote_path = os.path.join(env.path, 'cbttc/conf/local_settings.py')
+        put(local_path, remote_path)
+
+    elif not confirm(yellow('No local settings found for host "{}". Continue anyway?'.format(env.host))):
+        abort('No local settings found for host "{}". Aborting.')
+
+@host_context
+def upload_de_config():
+    "Uploads the DataExpress properties file associated with the target"
+    if env.host == 'etl':
+        etl_targets = ['production','development']
+        for target in etl_targets:
+            local_path = os.path.join(curdir, 'etl/de/conf/{}.properties'.format(target))
+            if os.path.exists(local_path):
+                remote_path = os.path.join(env.path, 'etl/de/conf/{}.properties'.format(target))
+                put(local_path, remote_path)
+            elif not confirm(yellow('No Configuration settings found for ETL. Continue anyway?')):
+                abort('No ETL Configuration found. Aborting.')    
+    else:
+        local_path = os.path.join(curdir, 'etl/de/conf/{}.properties'.format(env.host))
+
+        if os.path.exists(local_path):
+            remote_path = os.path.join(env.path, 'etl/de/conf/{}.properties'.format(env.host))
+            local_path = os.path.join(curdir, 'etl/de/conf/{}.properties'.format(env.host))
+            put(local_path, remote_path)
+
+        elif not confirm(yellow('No Configuration settings found for ETL. Continue anyway?')):
+            abort('No ETL Configuration found. Aborting.')
+
+
+@host_context
+def upload_etl_config():
+    "Uploads the non-versioned ETL configuration to the server"
+    local_path = os.path.join(curdir, 'etl/etl_config.json')
+
+    if os.path.exists(local_path):
+        remote_path = os.path.join(env.path, 'etl/etl_config.json')
+        put(local_path, remote_path)
+
+    elif not confirm(yellow('No Configuration settings found for ETL. Continue anyway?')):
+        abort('No ETL Configuration found. Aborting.')
+
+@host_context
+def upload_pgpass():
+    "Uploads the non-versioned pgpass file for ETL to production"
+    local_path = os.path.join(curdir, '.pgpass')
+
+    if os.path.exists(local_path):
+        remote_path = os.path.join('/home/devuser/')
+        put(local_path, remote_path)
 
 @host_context
 def install_deps(force=False):
     "Install dependencies via pip."
     if force:
-        verun('pip install -U -r requirements.txt')
+        verun('pip install --pre -U -r requirements.txt')
     else:
-        verun('pip install -r requirements.txt')
+        verun('pip install --pre -r requirements.txt')
 
 
 @host_context
 def verun(cmd):
     "Runs a command after the virtualenv is activated."
+    cd(env.path)
     with cd(env.path):
         with prefix('source ../bin/activate'):
             run(cmd)
-
 
 @host_context
 def mm_on():
