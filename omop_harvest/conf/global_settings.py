@@ -6,6 +6,9 @@ from django.conf.global_settings import *
 # Import the project module to calculate directories relative to the module
 # location.
 PROJECT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..')
+PROJECT_ROOT, PROJECT_MODULE_NAME = os.path.split(
+    os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+)
 
 # List all Django apps here. Note that standard Python libraries should not
 # be added to this list since Django will not recognize them as apps anyway.
@@ -19,6 +22,7 @@ INSTALLED_APPS = (
     'serrano',
     'avocado',
     'modeltree',
+    'haystack',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -30,7 +34,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
 
-    'haystack',
+    'chopauth',
+    'registration',
 )
 
 
@@ -50,6 +55,7 @@ INTERNAL_IPS = ('127.0.0.1', '::1')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+DIR = os.path.abspath(os.path.dirname(__file__))
 
 #
 # DATABASES
@@ -153,22 +159,31 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 # the WSGI application (static and media files), these need to be updated to
 # reflect this discrepancy.
 FORCE_SCRIPT_NAME = ''
-
+LOGIN_URL = FORCE_SCRIPT_NAME + '/login/'
+LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME + '/query/'
+LOGOUT_URL = '/logout/'
 ROOT_URLCONF = 'omop_harvest.conf.urls'
-
-# LOGIN_URL = '/login/'
-# LOGOUT_URL = '/logout/'
 
 # For non-publicly accessible applications, the siteauth app can be used to
 # restrict access site-wide.
 # SITEAUTH_ACCESS_ORDER = 'allow/deny'
 #
-# SITEAUTH_ALLOW_URLS = (
-#     r'^$',
-#     r'^log(in|out)/',
-#     r'^password/reset/',
-#     r'^(register|verify)/',
-# )
+SITEAUTH_ALLOW_URLS = (
+    r'^log(in|out)/',
+    r'^password/reset/',
+    r'^(register|verify)/',
+)
+
+SITEAUTH_DENY_URLS = (
+    r'^workspace/',
+    r'^workspace/discover/',
+    r'^query/',
+    r'^results/+',
+    r'^api/+',
+    r'^details/\d+/',
+    r'^moderate/+',
+    r'^verify/+',
+)
 
 #
 # MIDDLEWARE
@@ -180,6 +195,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'siteauth.middleware.SiteAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'serrano.middleware.SessionMiddleware',
 )
@@ -189,8 +205,8 @@ MIDDLEWARE_CLASSES = (
 # EMAIL
 #
 
-SUPPORT_EMAIL = 'support@example.com'
-DEFAULT_FROM_EMAIL = 'support@example.com'
+SUPPORT_EMAIL = 'cbmisupport@email.chop.edu'
+DEFAULT_FROM_EMAIL = 'cbmisupport@email.chop.edu'
 EMAIL_SUBJECT_PREFIX = '[omop_harvest] '
 SEND_BROKEN_LINK_EMAILS = False
 
@@ -207,27 +223,66 @@ SEND_BROKEN_LINK_EMAILS = False
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters' :{
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        }
+    },
     'filters': {
         'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
+            '()': 'django.utils.log.RequireDebugFalse'
         }
     },
     'handlers': {
+        'default': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/cbttc.log',
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5,
+            'formatter':'standard',
+        },
+        'request_handler': {
+                'level':'DEBUG',
+                'class':'logging.handlers.RotatingFileHandler',
+                'filename': 'logs/cbttc_request.log',
+                'maxBytes': 1024*1024*5, # 5 MB
+                'backupCount': 5,
+                'formatter':'standard',
+        },
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console':{
+            'level': 'DEBUG',
+            'class':'logging.StreamHandler',
         }
     },
     'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
         'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'avocado':{
+            'handlers': ['console'],
+            'level': 'DEBUG',
             'propagate': True,
+        },
+        'serrano':{
+            'handlers':['console'],
+            'level': 'DEBUG',
+            'propagate':True,
         },
     }
 }
-
 
 #
 # CACHE
@@ -236,8 +291,8 @@ LOGGING = {
 # For production environments, the memcached backend is highly recommended
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique',
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
         'KEY_PREFIX': 'omop_harvest',
         'VERSION': 1,
     }
@@ -287,7 +342,7 @@ SITE_ID = 1
 
 MODELTREES = {
     'default': {
-        'model': 'Person',
+        'model': 'omop_harvest.Person',
     }
 }
 

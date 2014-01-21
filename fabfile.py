@@ -147,7 +147,7 @@ def symlink_nginx():
     "Symlinks the nginx config to the host's nginx conf directory."
     with cd(env.path):
         sudo('ln -sf $PWD/server/nginx/{host}.conf '
-            '{nginx_conf_dir}/cbttc-{host}.conf'.format(**env))
+            '{nginx_conf_dir}/omop_harvest_{host}.conf'.format(**env))
 
 
 @host_context
@@ -166,7 +166,7 @@ def reload_supervisor():
     "Re-link supervisor config and force an update to supervisor."
     with cd(env.path):
         sudo('ln -sf $PWD/server/supervisor/{host}.ini '
-            '{supervisor_conf_dir}/cbttc-harvest-{host}.ini'.format(**env))
+            '{supervisor_conf_dir}/omop_harvest_{host}.ini'.format(**env))
     run('supervisorctl update')
 
 
@@ -174,9 +174,9 @@ def reload_supervisor():
 def reload_wsgi():
     "Gets the PID for the wsgi process and sends a HUP signal."
     if env.command == 'ci_deploy':
-        run('supervisorctl restart cbttc-harvest-development')
+        run('supervisorctl restart omop_harvest_development')
     else:
-        pid = run('supervisorctl pid cbttc-harvest-{host}'.format(host=env.host))
+        pid = run('supervisorctl pid omop_harvest_{host}'.format(host=env.host))
         try:
             int(pid)
             sudo('kill -HUP {}'.format(pid))
@@ -193,7 +193,7 @@ def reload_memcached():
 def deploy(force=False):
     setup()
     upload_settings()
-    upload_etl_config()
+    # upload_etl_config()
     mm_on()
     # merge_commit(commit)
     install_deps(force)
@@ -261,7 +261,7 @@ def upload_settings():
         local_path = os.path.join(curdir, 'settings/{}.py'.format(env.host))
 
     if os.path.exists(local_path):
-        remote_path = os.path.join(env.path, 'cbttc/conf/local_settings.py')
+        remote_path = os.path.join(env.path, 'omop_harvest/conf/local_settings.py')
         put(local_path, remote_path)
 
     elif not confirm(yellow('No local settings found for host "{}". Continue anyway?'.format(env.host))):

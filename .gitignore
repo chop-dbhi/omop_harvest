@@ -29,6 +29,7 @@ whoosh.index
 
 # Ignore local settings file intended for environment-specific settings
 local_settings.py
+settings
 
 # Ignore optimized scripts
 omop_harvest/static/scripts/javascript/min
