@@ -44,5 +44,8 @@ _site/media
 etl/vocabulary_4_unrestricted_csv*
 etl/OSIM2_10M_MSLR_MEDDRA_11_CSV*
 
+# Environment loader for ipython interactive mode
+bin/imanage.py
+
 # Ulysses editor external source index file
 .Ulysses-Group.plist

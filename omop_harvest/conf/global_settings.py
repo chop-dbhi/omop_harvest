@@ -29,6 +29,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+
+    'haystack',
 )
 
 
@@ -287,4 +289,17 @@ MODELTREES = {
     'default': {
         'model': 'Person',
     }
+}
+
+#
+# Haystack Configuration
+#
+HAYSTACK_SITECONF = 'avocado.search_sites'
+
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+
+HAYSTACK_WHOOSH_PATH = os.path.join(os.path.dirname(__file__), 'whoosh.index')
+
+AVOCADO = {
+    'METADATA_MIGRATION_APP': 'omop_harvest',
 }
