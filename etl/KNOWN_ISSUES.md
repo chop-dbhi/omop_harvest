@@ -1,4 +1,4 @@
-### Data Loading
+### Vocabulary Data Loading
 
 > omop_harvest=> \copy omop_drug_strength FROM './vocabulary_4_unrestricted_csv/drug_strength.csv' WITH DELIMITER ',' CSV HEADER
 > ERROR:  duplicate key value violates unique constraint "omop_drug_strength_pkey"
@@ -10,7 +10,7 @@ drug_strength.csv lines 1, 242-243:
 > 19113355,1125315,300,"mg",,,,1970-01-01,2099-12-31,
 > 19113355,1201620,30,"mg",,,,1970-01-01,2099-12-31,
 
-### Adding Foreign Keys
+### Vocabulary Foreign Keys
 
 > omop_harvest=> ALTER TABLE OMOP_SOURCE_TO_CONCEPT_MAP ADD CONSTRAINT OMOP_SOURCE_TO_CONCEPT_CONCEPT FOREIGN KEY (TARGET_CONCEPT_ID) REFERENCES OMOP_CONCEPT (CONCEPT_ID);
 > ERROR:  insert or update on table "omop_source_to_concept_map" violates foreign key constraint "omop_source_to_concept_concept"
@@ -22,7 +22,7 @@ drug_strength.csv lines 1, 242-243:
 >                   1015010 | 7G2AC00     |                   17 | Insertion of gonadorelin analogue implant |          43084597 |                    8 | PROCEDURE DRUG | Y           | 1970-01-01       | 2099-12-31     |
 > (1 row)
 
-### Vocabulary Use
+### Vocabulary Use with OSIM2
 
 > omop_harvest=> SELECT count(*) FROM omop_condition_era JOIN omop_concept ON omop_condition_era.condition_type_concept_id = omop_concept.concept_id;
 >  count 
