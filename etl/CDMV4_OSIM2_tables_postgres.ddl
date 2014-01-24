@@ -113,13 +113,10 @@ COMMENT ON COLUMN omop_condition_era.condition_era_start_date IS 'The start date
 COMMENT ON COLUMN omop_condition_era.condition_era_end_date IS 'The end date for the condition era constructed from the individual instances of condition occurrences. It is the end date of the final continuously recorded instance of the condition.' 
 ;
 
-COMMENT ON COLUMN omop_condition_era.condition_type_concept_id IS ' A foreign key to the predefined concept identifier in the vocabulary reflecting the parameters used to construct the condition era. For a detailed current listing of condition types see Appendix B: Condition Type Concepts.' 
+COMMENT ON COLUMN omop_condition_era.condition_type_concept_id IS 'A foreign key to the predefined concept identifier in the vocabulary reflecting the parameters used to construct the condition era. For a detailed current listing of condition types see Appendix B: Condition Type Concepts.' 
 ;
 
 COMMENT ON COLUMN omop_condition_era.condition_occurrence_count IS 'The number of individual condition occurrences used to construct the condition era.' 
-;
-
-COMMENT ON COLUMN omop_condition_era.condition_occurrence_type_id IS 'A foreign key to the deprecated CDMV2 condition occurrence type that makes up the condition era.' 
 ;
 
 COMMENT ON COLUMN omop_condition_era.confidence IS 'Deprecated CDMV2 field.' 
@@ -296,7 +293,7 @@ CREATE TABLE omop_drug_era
      drug_era_start_date DATE  NOT NULL , 
      drug_era_end_date DATE  NOT NULL , 
      drug_type_concept_id INTEGER  NOT NULL , 
-     drug_exposure_count NUMERIC (4) ,
+     drug_exposure_count NUMERIC (4)
     ) 
 ;
 
