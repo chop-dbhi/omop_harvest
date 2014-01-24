@@ -14,7 +14,6 @@ pip-log.txt
 
 # Server-related
 *.sock
-logs
 
 # Distribution related files
 dist
