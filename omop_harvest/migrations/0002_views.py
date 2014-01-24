@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import datetime
+import os
+from StringIO import StringIO
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from django.core.management import call_command
 
 
 class Migration(SchemaMigration):
