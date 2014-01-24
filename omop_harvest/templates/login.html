@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span4  offset4">
+            <div class="well">
+                <legend>Sign in</legend>
+                <form method="post" action="{% url "login" %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                    {{ form }}
+                    <p class=muted>Forgot your password? <a href="http://pwreset.chop.edu">Reset it</a></p>
+                    <button class="btn-info btn" type="submit">Login</button> <a href="{% url 'register' %}" class="btn-success btn">Register</a>
+                </form>
+            </div>
+    </div>
+    </div>
+{% endblock %}

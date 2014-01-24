@@ -1,20 +1,25 @@
-Django>=1.5,<1.6
+Django==1.5.5
 
 # Database Drivers, the Python stdlib has support for SQLite
-psycopg2
+psycopg2==2.5.2
 # cx_oracle
 # mysql-python
 
 # WSGI server
-# uWSGI
+uWSGI==2.0
 
 # Deployment with fabfile.py
-# Fabric
+Fabric==1.8.1
 
 # Harvest components
+avocado==2.2.1
 serrano==2.2.0
+modeltree==1.1.7
 
 # Harvest extensions
+python-memcached==1.53
 django-haystack==1.2.7
-Whoosh==2.4.0
-openpyxl
+whoosh==2.4.0
+openpyxl==1.8.0
+git+http://github.research.chop.edu/cbmi/django-chopauth.git#egg=django-chopauth@0.1.1
+django-siteauth==1.0.0

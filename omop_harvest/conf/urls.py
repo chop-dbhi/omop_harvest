@@ -23,6 +23,14 @@ urlpatterns = patterns('',
 
     # Administrative components
     url(r'^admin/', include(admin.site.urls)),
+
+    #CHOPAuth URLs
+    url(r'^register/$', 'registration.views.register',{'template_name':'registration.html'},name='register'),
+    url(r'^register/complete/$', TemplateView.as_view(template_name='registration_complete.html'),
+        name='registration-complete'),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name':'login.html'}, name='login'),
+    
+    url(r'^', include('chopauth.urls')),
 )
 
 # In production, these two locations must be served up statically
