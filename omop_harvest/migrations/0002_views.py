@@ -11,16 +11,32 @@ from django.core.management import call_command
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding views of almanac Element model as Harvest endpoints for project hierarchy relationships
-        old_colors = os.environ.get('DJANGO_COLORS', '')
-        os.environ['DJANGO_COLORS'] = 'nocolor'
-        sql = StringIO()
-        call_command('sqlcustom', 'omop_harvest', stdout=sql)
-        db.execute(sql.getvalue())
-        os.environ['DJANGO_COLORS'] = old_colors
+        sql = """
+        BEGIN;
+        CREATE MATERIALIZED VIEW omop_person_gender_concept AS SELECT DISTINCT omop_concept.* FROM omop_concept JOIN omop_person ON omop_concept.concept_id = omop_person.gender_concept_id;
+        CREATE MATERIALIZED VIEW omop_person_race_concept AS SELECT DISTINCT omop_concept.* FROM omop_concept JOIN omop_person ON omop_concept.concept_id = omop_person.race_concept_id;
+        CREATE MATERIALIZED VIEW omop_person_ethnicity_concept AS SELECT DISTINCT omop_concept.* FROM omop_concept JOIN omop_person ON omop_concept.concept_id = omop_person.ethnicity_concept_id;
+        CREATE MATERIALIZED VIEW omop_person_location_concept AS SELECT DISTINCT omop_concept.* FROM omop_concept JOIN omop_person ON omop_concept.concept_id = omop_person.location_concept_id;
+        CREATE MATERIALIZED VIEW omop_observation_period_person_status_concept AS SELECT DISTINCT omop_concept.* FROM omop_concept JOIN omop_observation_period ON omop_concept.concept_id = omop_observation_period.person_status_concept_id;
+        CREATE MATERIALIZED VIEW omop_drug_era_drug_concept AS SELECT DISTINCT omop_concept.* FROM omop_concept JOIN omop_drug_era ON omop_concept.concept_id = omop_drug_era.drug_concept_id;
+        CREATE MATERIALIZED VIEW omop_condition_era_condition_concept AS SELECT DISTINCT omop_concept.* FROM omop_concept JOIN omop_condition_era ON omop_concept.concept_id = omop_condition_era.condition_concept_id;
+        COMMIT;
+        """
+        db.execute_many(sql)
 
     def backwards(self, orm):
-        pass
+        sql = """
+        BEGIN;
+        DROP MATERIALIZED VIEW omop_person_gender_concept;
+        DROP MATERIALIZED VIEW omop_person_race_concept;
+        DROP MATERIALIZED VIEW omop_person_ethnicity_concept;
+        DROP MATERIALIZED VIEW omop_person_location_concept;
+        DROP MATERIALIZED VIEW omop_observation_period_person_status_concept;
+        DROP MATERIALIZED VIEW omop_drug_era_drug_concept;
+        DROP MATERIALIZED VIEW omop_condition_era_condition_concept;
+        COMMIT;
+        """
+        db.execute_many(sql)
 
     models = {
         u'omop_harvest.conditionera': {
