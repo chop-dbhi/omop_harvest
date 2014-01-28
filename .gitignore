@@ -44,6 +44,7 @@ _site/media
 # Ignore VocabV4 and OSIM2 CDMV2 source data
 etl/vocabulary_4_unrestricted_csv*
 etl/OSIM2_10M_MSLR_MEDDRA_11_CSV*
+etl/OSIM2_fth_data*
 
 # Environment loader for ipython interactive mode
 bin/imanage.py

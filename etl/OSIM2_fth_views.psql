@@ -1,0 +1,5 @@
+create or replace view fth_omop_person as select * from omop_person limit 2000000;
+create or replace view fth_omop_drug_era as select omop_drug_era.* from omop_drug_era join fth_omop_person on omop_drug_era.person_id = fth_omop_person.person_id;
+create or replace view fth_omop_condition_era as select omop_condition_era.* from omop_condition_era join fth_omop_person on omop_condition_era.person_id = fth_omop_person.person_id;
+create or replace view fth_omop_observation_period as select omop_observation_period.* from omop_observation_period join fth_omop_person on omop_observation_period.person_id = fth_omop_person.person_id;
+
