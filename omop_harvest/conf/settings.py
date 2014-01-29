@@ -7,6 +7,8 @@ except ImportError:
     import warnings
     warnings.warn('Local settings have not been found (src.conf.local_settings)')
 
+from chopauth.settings import *
+
 # FORCE_SCRIPT_NAME overrides the interpreted 'SCRIPT_NAME' provided by the
 # web server. since the URLs below are used for various purposes outside of
 # the WSGI application (static and media files), these need to be updated to
