@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+    <form method="post" action="{% url "login" %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {{ form }}
+        <p class=muted>Forgot your password? <a href="http://pwreset.chop.edu">Reset it</a></p>
+        <input type="submit" value="Login">
+    </form>
+{% endblock %}
