@@ -5,6 +5,7 @@
             <a href="{% url "landing" %}" class="brand"> OMOP </a>
             {% if user.is_authenticated %}
             <ul class=nav>
+                <li><a href="{% url "workspace" %}"><i class="icon-home"></i> <span class=hidden-phone>Workspace</a></li>                
                 <li><a href="{% url "query" %}"><i class=icon-search></i> <span class=hidden-phone>Query</span></a></li>
                 <li><a href="{% url "results" %}"><i class=icon-table></i> <span class=hidden-phone>Results</span></a></li>
             </ul>
