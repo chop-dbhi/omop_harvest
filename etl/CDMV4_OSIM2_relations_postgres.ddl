@@ -345,14 +345,3 @@ ALTER TABLE omop_visit_occurrence
     ) 
 ;
 
-ALTER TABLE omop_drug_era 
-    ADD CONSTRAINT omop_drug_era_exposure_type_FK FOREIGN KEY 
-    ( 
-     drug_exposure_type
-    ) 
-    REFERENCES omop_drug_exposure_type 
-    ( 
-     drug_exposure_type
-    ) 
-;
-
