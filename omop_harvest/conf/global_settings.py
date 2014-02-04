@@ -34,7 +34,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
 
-    'chopauth',
     'registration',
 )
 
@@ -291,8 +290,8 @@ LOGGING = {
 # For production environments, the memcached backend is highly recommended
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique',
         'KEY_PREFIX': 'omop_harvest',
         'VERSION': 1,
     }
