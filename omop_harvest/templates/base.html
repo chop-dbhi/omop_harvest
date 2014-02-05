@@ -38,7 +38,7 @@
         </div>
 
         <script>{% include "cilantro.js" %}</script>
-        <script src="{{ STATIC_URL }}cilantro/js/require.js"></script>
+        <script data-main="cilantro/main" src="{{ STATIC_URL }}cilantro/js/require.js"></script>
         {% block scripts %}{% endblock scripts %}
 
         {% if not debug %}
