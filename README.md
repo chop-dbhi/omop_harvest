@@ -41,7 +41,7 @@ You can install this project on your local server, using any dataset in OMOP CDM
 
 ### 4. Load data into your database
 
-- Using an OMOP released OSIM2 dataset
+- Using an OMOP released OSIM2 dataset (please review `etl/KNOWN_ISSUES.md` before filing issues related to this process)
 
     - Download and Extract Data
     
