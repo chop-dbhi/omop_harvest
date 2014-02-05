@@ -31,6 +31,9 @@ whoosh.index
 local_settings.py
 settings
 
+# Ignore sqlite db used for testing
+omop_harvest.db
+
 # Ignore optimized scripts
 omop_harvest/static/scripts/javascript/min
 
