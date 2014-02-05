@@ -29,9 +29,17 @@ urlpatterns = patterns('',
     url(r'^register/complete/$', TemplateView.as_view(template_name='registration_complete.html'),
         name='registration-complete'),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name':'login.html'}, name='login'),
-    
-    url(r'^', include('chopauth.urls')),
 )
+
+# If chopauth is available, include those urls
+try:
+    urlpatterns += patterns('',
+        url(r'^', include('chopauth.urls')),
+    )
+except ImportError:
+    urlpatterns += patterns('',
+        url(r'^', include('registration.urls')),
+    )
 
 # In production, these two locations must be served up statically
 urlpatterns += patterns('django.views.static',
