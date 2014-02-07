@@ -355,5 +355,6 @@ HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(os.path.dirname(__file__), 'whoosh.index')
 
 AVOCADO = {
+    'DATA_CHACHE_ENABLED': False,
     'METADATA_MIGRATION_APP': 'omop_harvest',
 }
