@@ -21,5 +21,4 @@ python-memcached==1.53
 django-haystack==1.2.7
 whoosh==2.4.0
 openpyxl==1.8.0
-git+http://github.research.chop.edu/cbmi/django-chopauth.git@0.1.1#egg=django-chopauth
 django-siteauth==1.0.0
