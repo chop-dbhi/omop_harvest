@@ -22,3 +22,4 @@ django-haystack==1.2.7
 whoosh==2.4.0
 openpyxl==1.8.0
 django-siteauth==1.0.0
+django-registration2==0.9.3
