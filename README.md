@@ -92,6 +92,8 @@ Make sure the SQL is compatible with your database and the tables which are refe
 
 ### 7. Run South migrations
 
+    # Syncdb essential, non-South migration using apps
+    python bin/manage.py syncdb
     # Fake the initial project model migration, as we already created the tables
     python bin/manage.py migrate --fake omop_harvest 0001
     # Migrate all apps forward; this will run the SQL code reviewed in the last step, so it may take a while
