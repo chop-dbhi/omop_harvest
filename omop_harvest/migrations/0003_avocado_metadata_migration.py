@@ -3,6 +3,10 @@ from south.v2 import DataMigration
 
 class Migration(DataMigration):
 
+    depends_on = (
+       ("avocado", "0031_auto__add_field_dataquery_tree__add_field_datacontext_tree"),
+    )
+
     def forwards(self, orm):
         "Perform a 'safe' load using Avocado's backup utilities."
         from avocado.core import backup
