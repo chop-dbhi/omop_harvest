@@ -28,6 +28,10 @@ code {
     right: 0;
 }
 
+body, #concept-panel, #context-panel {
+    padding-top: 40px;
+}
+
 @media (max-width: 979px) {
     body {
         padding-top: 0
