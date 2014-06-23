@@ -1,13 +1,12 @@
 import os
 import json
 from base import *
-from app import *
 import dj_database_url
 
 curdir = os.path.dirname(os.path.abspath(__file__))
 project_settings = json.loads(open(os.path.join(curdir, '../../.project_config.json'), 'r').read())['project_settings']
 
-environment = get_env_variable('APP_ENV')
+environment = 'local'
 
 if environment not in project_settings.keys():
     error_msg = "Settings for {0} environment not found in project configuration.".format(environment)
@@ -15,7 +14,7 @@ if environment not in project_settings.keys():
 
 # Check here to see if db details exist in env
 LINKED_DB_IP = os.environ.get('DB_PORT_5432_TCP_ADDR')
-# Check here to see if memcache details exist in env
+
 LINKED_MEMCACHE = os.environ.get('MC_PORT_11211_TCP_ADDR')
 
 if LINKED_DB_IP:
