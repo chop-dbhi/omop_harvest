@@ -64,7 +64,12 @@ RUN (cd /tmp/node && git checkout v0.10.26 && ./configure && make && make instal
 RUN (apt-get install -y npm)
 RUN (npm install -g coffee-script)
 RUN apt-get update -qq --fix-missing
-RUN apt-get install -y rubygems
+RUN wget http://rubyforge.org/frs/download.php/38646/rubygems-1.2.0.tgz   && \
+    tar -xzvf rubygems-1.2.0.tgz                                          && \
+    cd rubygems-1.2.0                                                     && \
+    ruby setup.rb                                                         && \
+    ln -s /usr/bin/gem1.8 /usr/bin/gem                                    && \
+    gem update --system                                                   
 RUN (gem install sass)
 RUN (gem install bourbon)
 

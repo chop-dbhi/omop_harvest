@@ -1,7 +1,7 @@
 FROM phusion/baseimage
 MAINTAINER davidsonl2@email.chop.edu
 
-ENV APP_NAME varify_data_service
+ENV APP_NAME omop_harvest_data_service
 
 # Add the PostgreSQL PGP key to verify their Debian packages.
 # It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
