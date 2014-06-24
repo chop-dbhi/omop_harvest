@@ -26,7 +26,6 @@ if LINKED_DB_IP:
 else:
     DATABASES = {
         'default': dj_database_url.parse(project_settings[environment]['databases']['default']),
-        'portal': dj_database_url.parse(project_settings[environment]['databases']['portal']),
     }
 
 
@@ -61,3 +60,16 @@ SECRET_KEY = project_settings[environment]['django']['SECRET_KEY']
 SERVICE_CLIENT_SETTINGS = project_settings[environment]['django']['SERVICE_CLIENT_SETTINGS'],
 
 PROTOCOL_PROPS = project_settings[environment]['django']['PROTOCOL_PROPS']
+
+
+# LDAP
+LDAP = {}
+LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
+LDAP['PREBINDDN'] = project_settings[environment]['django']['LDAP']['PREBINDDN']
+LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
+LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
+LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
+LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
+
+# Logging
+LOGGING = project_settings[environment]['django']['LOGGING']
