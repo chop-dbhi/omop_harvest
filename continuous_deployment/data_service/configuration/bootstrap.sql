@@ -1,3 +1,3 @@
-CREATE USER varify WITH SUPERUSER PASSWORD 'varify';
+CREATE USER omop_harvest WITH SUPERUSER PASSWORD 'omop_harvest';
 
-CREATE DATABASE varify WITH OWNER varify;
+CREATE DATABASE omop_harvest WITH OWNER omop_harvest;
