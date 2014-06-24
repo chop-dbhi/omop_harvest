@@ -11,6 +11,7 @@
 *.egg
 *.egg-info
 pip-log.txt
+.python-version
 
 # Server-related
 *.sock
