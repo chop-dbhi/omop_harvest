@@ -11,6 +11,7 @@
 *.egg
 *.egg-info
 pip-log.txt
+.python-version
 
 # Server-related
 *.sock
@@ -23,6 +24,7 @@ MANIFEST
 
 # Fabric hosts if using the provided fabfile.py
 .fabhosts
+.project_config.json
 
 # Avocado search engine index
 whoosh.index

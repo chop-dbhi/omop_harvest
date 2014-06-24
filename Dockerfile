@@ -6,7 +6,7 @@ MAINTAINER Le Mar Davidson "davidsonl2@email.chop.edu"
 
 # Base Harvest System Software
 RUN apt-get update -qq --fix-missing
-RUN apt-get install -y curl python-dev python-setuptools supervisor git-core libpq-dev libsasl2-dev libldap2-dev openssl memcached
+RUN apt-get install -y curl python-dev python-setuptools supervisor git-core libpq-dev libsasl2-dev libldap2-dev openssl memcached curl python-dev python-setuptools supervisor git-core libpq-dev libldap2-dev libsasl2-dev build-essential libssl-dev redis-server libxml2-dev libxslt1-dev  zlib1g-dev wget ruby
 RUN easy_install pip
 RUN pip install virtualenv
 RUN pip install uwsgi
@@ -59,16 +59,14 @@ RUN dpkg -i scala-2.9.3.deb
 RUN apt-get update
 RUN apt-get install -y scala
 
-RUN apt-get update -qq --fix-missing
-RUN apt-get install -y ruby rubygems
-RUN apt-get install -y curl python-dev python-setuptools supervisor git-core libpq-dev libldap2-dev libsasl2-dev openssl memcached  build-essential libssl-dev redis-server libxml2-dev libxslt1-dev  zlib1g-dev wget
-
 RUN (cd /tmp && git clone https://github.com/joyent/node.git)
 RUN (cd /tmp/node && git checkout v0.10.26 && ./configure && make && make install)
 RUN (apt-get install -y npm)
 RUN (npm install -g coffee-script)
-RUN (gem install sass)
-RUN (gem install bourbon)
+RUN apt-get update -qq --fix-missing
+RUN gem install rubygems-update    &&  \
+    update_rubygems                &&  \
+    gem install sass bourbon
 
 # Python dependencies
 
@@ -104,6 +102,9 @@ RUN /opt/ve/harvest-app/bin/pip install Markdown
 RUN /opt/ve/harvest-app/bin/pip install pycap
 RUN /opt/ve/harvest-app/bin/pip install csvkit
 
+# Upgrades
+RUN /opt/ve/harvest-app/bin/pip install -U "avocado>=2.3.0,<2.4.0" "whoosh>=2.6,<2.7" "django-haystack>=2.0,<2.2"
+
 # Add the application files
 ADD . /opt/apps/harvest-app
 
@@ -117,7 +118,10 @@ ADD continuous_deployment/custom/scripts/start.sh /usr/local/bin/start
 # Add custom script for loading an initial database
 ADD continuous_deployment/data_service/scripts/load_initial_data.sh /usr/local/bin/load_initial_data
 
+RUN chmod +x /opt/apps/harvest-app/run-tests.sh
+
 RUN chmod +x /usr/local/bin/start
+
 
 ENV ETCD_HOST ''
 
