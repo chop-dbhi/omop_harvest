@@ -1,25 +1,24 @@
-Django==1.5.5
+--allow-external argparse
+Django>=1.5.5,<1.6
+Markdown
+uWSGI
+Fabric>=1.8
 
 # Database Drivers, the Python stdlib has support for SQLite
-psycopg2==2.5.2
+psycopg2
+csvkit
 # cx_oracle
 # mysql-python
 
-# WSGI server
-uWSGI==2.0
-
-# Deployment with fabfile.py
-Fabric==1.8.1
-
 # Harvest components
-avocado==2.2.1
-serrano==2.2.0
-modeltree==1.1.7
+avocado>=2.3.0,<2.4.0
+serrano>=2.3.0,<2.3.3
+django-haystack>=2.0,<2.2
+python-memcached==1.53
+
 
 # Harvest extensions
-python-memcached==1.53
-django-haystack==1.2.7
-whoosh==2.4.0
-openpyxl==1.8.0
+whoosh>=2.6,<2.7
+openpyxl
 django-siteauth==1.0.0
 django-registration2==0.9.3
