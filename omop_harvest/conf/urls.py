@@ -9,18 +9,16 @@ add_to_builtins('avocado.templatetags.avocado_tags')
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     # Landing Page
     url(r'^$', 'omop_harvest.views.landing', name='landing'),
-
     # Cilantro Pages
     url(r'^workspace/', TemplateView.as_view(template_name='index.html'), name='workspace'),
     url(r'^query/', TemplateView.as_view(template_name='index.html'), name='query'),
     url(r'^results/', TemplateView.as_view(template_name='index.html'), name='results'),
-
     # Serrano-compatible Endpoint
     url(r'^api/', include('serrano.urls')),
-
     # Administrative components
     url(r'^admin/', include(admin.site.urls)),
 
