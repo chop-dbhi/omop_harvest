@@ -41,13 +41,16 @@ if LINKED_MEMCACHE:
 else:
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique',
+            'KEY_PREFIX': 'omop_harvest',
+            'VERSION': 1,
         }
     }
 
 EMAIL_PORT = project_settings[environment]['django']['EMAIL_PORT']
 
-EMAIL_SUBJECT_PREFIX = '[brand_new Local] '
+EMAIL_SUBJECT_PREFIX = '[OMOP Harvest] '
 
 DEBUG = project_settings[environment]['django']['DEBUG']
 
@@ -55,18 +58,11 @@ FORCE_SCRIPT_NAME = project_settings[environment]['django']['FORCE_SCRIPT_NAME']
 
 SECRET_KEY = project_settings[environment]['django']['SECRET_KEY']
 
-# eHB Integration
-
-SERVICE_CLIENT_SETTINGS = project_settings[environment]['django']['SERVICE_CLIENT_SETTINGS'],
-
-PROTOCOL_PROPS = project_settings[environment]['django']['PROTOCOL_PROPS']
-
-# LDAP
-LDAP = {}
-LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
-LDAP['PREBINDDN'] = project_settings[environment]['django']['LDAP']['PREBINDDN']
-LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
-LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
-LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
-LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
-
+## LDAP
+#LDAP = {}
+#LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
+#LDAP['PREBINDDN'] = project_settings[environment]['django']['LDAP']['PREBINDDN']
+#LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
+#LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
+#LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
+#LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
