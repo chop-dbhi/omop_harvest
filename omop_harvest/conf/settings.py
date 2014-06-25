@@ -71,3 +71,5 @@ LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
 LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
 LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
 LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
+
+REGISTRATION_MODERATORS = project_settings[environment]['django']['REGISTRATION_MODERATORS']
