@@ -70,5 +70,3 @@ LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_
 LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
 LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
 
-# Logging
-LOGGING = project_settings[environment]['django']['LOGGING']
