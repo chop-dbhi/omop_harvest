@@ -102,6 +102,9 @@ RUN /opt/ve/harvest-app/bin/pip install Markdown
 RUN /opt/ve/harvest-app/bin/pip install pycap
 RUN /opt/ve/harvest-app/bin/pip install csvkit
 
+# Upgrades
+RUN /opt/ve/harvest-app/bin/pip install -U "avocado>=2.3.0,<2.4.0" "whoosh>=2.6,<2.7" "django-haystack>=2.0,<2.2"
+
 # Add the application files
 ADD . /opt/apps/harvest-app
 
