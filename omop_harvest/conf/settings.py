@@ -1,8 +1,16 @@
 import os
 import json
+
+try:
+  from chopauth.settings import *
+except ImportError:
+  pass
+
 from base import *
 from app import *
 import dj_database_url
+
+
 
 curdir = os.path.dirname(os.path.abspath(__file__))
 project_settings = json.loads(open(os.path.join(curdir, '../../.project_config.json'), 'r').read())['project_settings']
