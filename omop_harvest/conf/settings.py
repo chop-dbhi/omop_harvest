@@ -61,7 +61,6 @@ SERVICE_CLIENT_SETTINGS = project_settings[environment]['django']['SERVICE_CLIEN
 
 PROTOCOL_PROPS = project_settings[environment]['django']['PROTOCOL_PROPS']
 
-
 # LDAP
 LDAP = {}
 LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
