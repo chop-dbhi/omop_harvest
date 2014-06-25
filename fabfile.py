@@ -190,12 +190,22 @@ def push_to_repo():
 def deploy(commit='latest'):
 
     run('docker pull {0}/omop_harvest-{1}:{2}'.format(project_config['docker_registry'], env.git_branch, commit))
-    container = run('docker run -d -p :8000 -e APP_ENV={0} {1}/omop_harvest-{2}:{3} start'.format(
+    #container = run('docker run -d -p :8000 -e APP_ENV={0} {1}/omop_harvest-{2}:{3} start'.format(
+    #    env.host,
+    #    project_config['docker_registry'],
+    #    env.git_branch,
+    #    commit)
+    #)
+
+    #Temporary:  Anticipating new version of ATI Template
+    container = run('docker run --link memcache:mc -d -p :8000 -e APP_ENV={0} {1}/omop_harvest-{2}:{3} start'.format(
         env.host,
         project_config['docker_registry'],
         env.git_branch,
         commit)
     )
+    #
+
     port = run("docker inspect --format='{{{{range $p, $conf := .NetworkSettings.Ports}}}}{{{{(index $conf 0).HostPort}}}} {{{{end}}}}' {0}".format(container))
     commit_msg = local('git --no-pager log --oneline -1', capture = True)
     auth_token = project_config['hipchat']['auth_token']
