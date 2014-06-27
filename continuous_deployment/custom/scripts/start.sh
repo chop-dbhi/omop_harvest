@@ -2,6 +2,8 @@
 
 cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/fab get_configuration:noinput=True
 
+cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/pip install -r /opt/apps/harvest-app/continuous_deployment/requirements.txt
+
 cd /opt/apps/harvest-app/ && make build
 cd /opt/apps/harvest-app/ && make sass
 cd /opt/apps/harvest-app/ && make collect

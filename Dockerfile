@@ -118,7 +118,10 @@ ADD continuous_deployment/custom/scripts/start.sh /usr/local/bin/start
 # Add custom script for loading an initial database
 ADD continuous_deployment/data_service/scripts/load_initial_data.sh /usr/local/bin/load_initial_data
 
+RUN chmod +x /opt/apps/harvest-app/run-tests.sh
+
 RUN chmod +x /usr/local/bin/start
+
 
 ENV ETCD_HOST ''
 
