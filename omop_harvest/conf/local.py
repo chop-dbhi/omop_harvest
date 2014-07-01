@@ -1,18 +1,12 @@
 import os
 import json
 from base import *
-from app import *
 import dj_database_url
-
-try:
-    from chopauth.settings import *
-except ImportError:
-    pass
 
 curdir = os.path.dirname(os.path.abspath(__file__))
 project_settings = json.loads(open(os.path.join(curdir, '../../.project_config.json'), 'r').read())['project_settings']
 
-environment = get_env_variable('APP_ENV')
+environment = 'local'
 
 if environment not in project_settings.keys():
     error_msg = "Settings for {0} environment not found in project configuration.".format(environment)
@@ -20,7 +14,7 @@ if environment not in project_settings.keys():
 
 # Check here to see if db details exist in env
 LINKED_DB_IP = os.environ.get('DB_PORT_5432_TCP_ADDR')
-# Check here to see if memcache details exist in env
+
 LINKED_MEMCACHE = os.environ.get('MC_PORT_11211_TCP_ADDR')
 
 if LINKED_DB_IP:
@@ -31,6 +25,7 @@ if LINKED_DB_IP:
 else:
     DATABASES = {
         'default': dj_database_url.parse(project_settings[environment]['databases']['default']),
+        'portal': dj_database_url.parse(project_settings[environment]['databases']['portal']),
     }
 
 
@@ -46,16 +41,13 @@ if LINKED_MEMCACHE:
 else:
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'unique',
-            'KEY_PREFIX': 'omop_harvest',
-            'VERSION': 1,
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
         }
     }
 
 EMAIL_PORT = project_settings[environment]['django']['EMAIL_PORT']
 
-EMAIL_SUBJECT_PREFIX = '[OMOP Harvest] '
+EMAIL_SUBJECT_PREFIX = '[brand_new Local] '
 
 DEBUG = project_settings[environment]['django']['DEBUG']
 
@@ -63,13 +55,8 @@ FORCE_SCRIPT_NAME = project_settings[environment]['django']['FORCE_SCRIPT_NAME']
 
 SECRET_KEY = project_settings[environment]['django']['SECRET_KEY']
 
-# LDAP
-LDAP = {}
-LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
-LDAP['PREBINDDN'] = project_settings[environment]['django']['LDAP']['PREBINDDN']
-LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
-LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
-LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
-LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
+# eHB Integration
 
-REGISTRATION_MODERATORS = project_settings[environment]['django']['REGISTRATION_MODERATORS']
+SERVICE_CLIENT_SETTINGS = project_settings[environment]['django']['SERVICE_CLIENT_SETTINGS'],
+
+PROTOCOL_PROPS = project_settings[environment]['django']['PROTOCOL_PROPS']
