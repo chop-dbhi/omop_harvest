@@ -122,7 +122,6 @@ RUN chmod +x /opt/apps/harvest-app/run-tests.sh
 
 RUN chmod +x /usr/local/bin/start
 
-
 ENV ETCD_HOST ''
 
 EXPOSE 8000
