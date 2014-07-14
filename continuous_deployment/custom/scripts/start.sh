@@ -1,9 +1,7 @@
 #!/bin/bash
 
-service memcached start
-
 # Install CHOP Authentication for CHOP/CID
-cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/pip install http://github.research.chop.edu/cbmi/django-chopauth/archive/master.tar.gz
+cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/pip install -r /opt/apps/harvest-app/continuous_deployment/requirements.txt
 
 cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/fab get_configuration:noinput=True
 
