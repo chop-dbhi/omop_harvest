@@ -1,8 +1,8 @@
-\echo 'omop_condition_era'
-\copy omop_condition_era (condition_era_id, condition_era_start_date, person_id, confidence, condition_era_end_date, condition_concept_id, condition_type_concept_id, condition_occurrence_count) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/condition_era.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_drug_era'
-\copy omop_drug_era (drug_era_id, drug_era_start_date, drug_era_end_date, person_id, drug_type_concept_id, drug_concept_id, drug_exposure_count) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/drug_era.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_observation_period'
-\copy omop_observation_period (observation_period_id, observation_period_start_date, observation_period_end_date, person_id, person_status_concept_id, rx_data_availability, dx_data_availability, hospital_data_availability, confidence) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/observation_period.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_person'
-\copy omop_person (person_id, year_of_birth, gender_concept_id, race_concept_id, location_concept_id, person_source_value, gender_source_value, source_location_code, race_source_value) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/person.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'condition_era'
+\copy condition_era (condition_era_id, condition_era_start_date, person_id, condition_era_end_date, condition_concept_id, condition_type_concept_id, condition_occurrence_count) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/condition_era.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'drug_era'
+\copy drug_era (drug_era_id, drug_era_start_date, drug_era_end_date, person_id, drug_type_concept_id, drug_concept_id, drug_exposure_count) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/drug_era.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'observation_period'
+\copy observation_period (observation_period_id, observation_period_start_date, observation_period_end_date, person_id) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/observation_period.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'person'
+\copy person (person_id, year_of_birth, gender_concept_id, race_concept_id, person_source_value, gender_source_value, race_source_value) FROM './OSIM2_10M_MSLR_MEDDRA_11_CSV/person.csv' WITH DELIMITER ',' CSV HEADER

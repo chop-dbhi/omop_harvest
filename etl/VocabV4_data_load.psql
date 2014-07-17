@@ -1,18 +1,18 @@
-\echo 'omop_vocabulary'
-\copy omop_vocabulary FROM './vocabulary_4_unrestricted_csv/VOCABULARY.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_concept'
-\copy omop_concept FROM './vocabulary_4_unrestricted_csv/CONCEPT.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_relationship'
-\copy omop_relationship FROM './vocabulary_4_unrestricted_csv/RELATIONSHIP.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_concept_synonym'
-\copy omop_concept_synonym FROM './vocabulary_4_unrestricted_csv/CONCEPT_SYNONYM.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_source_to_concept_map'
-\copy omop_source_to_concept_map (source_code, source_vocabulary_id, source_code_description, target_concept_id, target_vocabulary_id, mapping_type, primary_map, valid_start_date, valid_end_date, invalid_reason) FROM './vocabulary_4_unrestricted_csv/SOURCE_TO_CONCEPT_MAP.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_concept_relationship'
-\copy omop_concept_relationship (concept_id_1, concept_id_2, relationship_id, valid_start_date, valid_end_date, invalid_reason) FROM './vocabulary_4_unrestricted_csv/CONCEPT_RELATIONSHIP.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_concept_ancestor'
-\copy omop_concept_ancestor (ancestor_concept_id, descendant_concept_id, max_levels_of_separation, min_levels_of_separation) FROM './vocabulary_4_unrestricted_csv/CONCEPT_ANCESTOR.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_drug_strength'
-\copy omop_drug_strength FROM './vocabulary_4_unrestricted_csv/DRUG_STRENGTH.csv' WITH DELIMITER ',' CSV HEADER
-\echo 'omop_drug_approval'
-\copy omop_drug_approval FROM './vocabulary_4_unrestricted_csv/DRUG_APPROVAL.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'vocabulary'
+\copy vocabulary FROM './vocabulary_4_csv/VOCABULARY.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'concept'
+\copy concept FROM './vocabulary_4_csv/CONCEPT.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'relationship'
+\copy relationship FROM './vocabulary_4_csv/RELATIONSHIP.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'concept_synonym'
+\copy concept_synonym FROM './vocabulary_4_csv/CONCEPT_SYNONYM.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'source_to_concept_map'
+\copy source_to_concept_map (source_code, source_vocabulary_id, source_code_description, target_concept_id, target_vocabulary_id, mapping_type, primary_map, valid_start_date, valid_end_date, invalid_reason) FROM './vocabulary_4_csv/SOURCE_TO_CONCEPT_MAP.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'concept_relationship'
+\copy concept_relationship (concept_id_1, concept_id_2, relationship_id, valid_start_date, valid_end_date, invalid_reason) FROM './vocabulary_4_csv/CONCEPT_RELATIONSHIP.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'concept_ancestor'
+\copy concept_ancestor (ancestor_concept_id, descendant_concept_id, max_levels_of_separation, min_levels_of_separation) FROM './vocabulary_4_csv/CONCEPT_ANCESTOR.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'drug_strength'
+\copy drug_strength (drug_concept_id, ingredient_concept_id, amount_value, amount_unit, concentration_value, concentration_enum_unit, concentration_denom_unit, valid_start_date, valid_end_date, invalid_reason) FROM './vocabulary_4_csv/DRUG_STRENGTH.csv' WITH DELIMITER ',' CSV HEADER
+\echo 'drug_approval'
+\copy drug_approval FROM './vocabulary_4_csv/DRUG_APPROVAL.csv' WITH DELIMITER ',' CSV HEADER
