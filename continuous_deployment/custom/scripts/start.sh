@@ -2,6 +2,7 @@
 
 # Install CHOP Authentication for CHOP/CID
 cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/pip install -r /opt/apps/harvest-app/continuous_deployment/requirements.txt
+cp /opt/apps/harvest-app/continuous_deployment/conf/app.py /opt/apps/harvest-app/omop_harvest/conf/app.py
 
 cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/fab get_configuration:noinput=True
 
