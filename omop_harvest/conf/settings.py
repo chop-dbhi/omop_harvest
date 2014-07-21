@@ -64,12 +64,12 @@ FORCE_SCRIPT_NAME = project_settings[environment]['django']['FORCE_SCRIPT_NAME']
 SECRET_KEY = project_settings[environment]['django']['SECRET_KEY']
 
 # LDAP
-LDAP = {}
-LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
-LDAP['PREBINDDN'] = project_settings[environment]['django']['LDAP']['PREBINDDN']
-LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
-LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
-LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
-LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
+#LDAP = {}
+#LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
+#LDAP['PREBINDDN'] = project_settings[environment]['django']['LDAP']['PREBINDDN']
+#LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
+#LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
+#LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
+#LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
 
-REGISTRATION_MODERATORS = project_settings[environment]['django']['REGISTRATION_MODERATORS']
+#REGISTRATION_MODERATORS = project_settings[environment]['django']['REGISTRATION_MODERATORS']
