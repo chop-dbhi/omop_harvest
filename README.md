@@ -31,7 +31,7 @@ You can install this project on your local server, using any dataset in OMOP CDM
 ### 2. Clone the project repository
 
     cd omop_harvest_env
-    git clone http://github.research.chop.edu/cbmi/omop_harvest.git
+    git clone https://github.com/cbmi/omop_harvest.git
 
 ### 3. Install project requirements
 
