@@ -27,6 +27,7 @@ urlpatterns = patterns(
     url(r'^register/complete/$', TemplateView.as_view(template_name='registration_complete.html'),
         name='registration-complete'),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name':'login.html'}, name='login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
 )
 
 # If chopauth is available, include those urls

@@ -1,8 +1,8 @@
-\echo 'omop_person'
-\copy omop_person from OSIM2_fth_data/fth_omop_person_data
-\echo 'omop_drug_era'
-\copy omop_drug_era from OSIM2_fth_data/fth_omop_drug_era_data
-\echo 'omop_condition_era'
-\copy omop_condition_era from OSIM2_fth_data/fth_omop_condition_era_data
-\echo 'omop_observation_period'
-\copy omop_observation_period from OSIM2_fth_data/fth_omop_observation_period_data
+\echo 'person'
+\copy person from OSIM2_fth_data/fth_person_data
+\echo 'drug_era'
+\copy drug_era from OSIM2_fth_data/fth_drug_era_data
+\echo 'condition_era'
+\copy condition_era from OSIM2_fth_data/fth_condition_era_data
+\echo 'observation_period'
+\copy observation_period from OSIM2_fth_data/fth_observation_period_data

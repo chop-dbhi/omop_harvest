@@ -1,4 +1,4 @@
-for i in `ls OSIM2_10M_MSLR_MEDDRA_11_CSV/*csv vocabulary_4_unrestricted_csv/*csv`; do
+for i in `ls OSIM2_1M_MSLR_SNOMED_0_CSV/*csv vocabulary_4_csv/*csv`; do
     echo ${i}
-    sed -i '.bak' -e 's/|$//' -e 's/,""/,/g' ${i}
+    sed -i '.bak' -e 's/|$//' -e 's/,"",/,,/g' ${i}
 done

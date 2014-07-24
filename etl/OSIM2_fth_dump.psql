@@ -1,8 +1,8 @@
-\echo 'fth_omop_person'
-\copy (SELECT * from fth_omop_person) to OSIM2_fth_data/fth_omop_person_data
-\echo 'fth_omop_drug_era'
-\copy (SELECT * from fth_omop_drug_era) to OSIM2_fth_data/fth_omop_drug_era_data
-\echo 'fth_omop_condition_era'
-\copy (SELECT * from fth_omop_condition_era) to OSIM2_fth_data/fth_omop_condition_era_data
-\echo 'fth_omop_observation_period'
-\copy (SELECT * from fth_omop_observation_period) to OSIM2_fth_data/fth_omop_observation_period_data
+\echo 'fth_person'
+\copy (SELECT * from fth_person) to OSIM2_fth_data/fth_person_data
+\echo 'fth_drug_era'
+\copy (SELECT * from fth_drug_era) to OSIM2_fth_data/fth_drug_era_data
+\echo 'fth_condition_era'
+\copy (SELECT * from fth_condition_era) to OSIM2_fth_data/fth_condition_era_data
+\echo 'fth_observation_period'
+\copy (SELECT * from fth_observation_period) to OSIM2_fth_data/fth_observation_period_data
