@@ -18,7 +18,7 @@ class VerifyPersonExistsResultsVisible(unittest.TestCase):
         driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()
-        driver.find_element_by_id("id_password").send_keys("chopchop")
+        driver.find_element_by_id("id_password").send_keys("test")
         driver.find_element_by_css_selector("button.btn-info.btn").click()
         for i in range(60):
             try:
