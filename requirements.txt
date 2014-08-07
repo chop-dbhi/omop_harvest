@@ -16,15 +16,9 @@ serrano>=2.3.0,<2.3.3
 django-haystack>=2.0,<2.2
 python-memcached==1.53
 
+
 # Harvest extensions
 whoosh>=2.6,<2.7
 openpyxl
 django-siteauth==1.0.0
 django-registration2==0.9.3
-
-# Dependencies for Fabric, tests and project setttings
-selenium
-dj-database-url
-etcd
-requests
-pytz

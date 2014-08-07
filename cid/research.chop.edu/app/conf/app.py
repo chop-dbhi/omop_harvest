@@ -1,4 +1,6 @@
 import os
+import json
+
 
 # Import global settings to make it easier to extend settings.
 from django.conf.global_settings import *
@@ -33,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+    'chopauth',
     'registration',
 )
 
@@ -357,3 +360,30 @@ HAYSTACK_CONNECTIONS = {
 AVOCADO = {
     'METADATA_MIGRATION_APP': 'omop_harvest',
 }
+
+
+try:
+    from chopauth.settings import *
+except ImportError:
+    pass
+
+curdir = os.path.dirname(os.path.abspath(__file__))
+project_settings = json.loads(open(os.path.join(curdir, '../../.project_config.json'), 'r').read())['project_settings']
+
+from base import get_env_variable
+environment = get_env_variable('APP_ENV')
+
+if environment not in project_settings.keys():
+    error_msg = "Settings for {0} environment not found in project configuration.".format(environment)
+    raise ImproperlyConfigured(error_msg)
+
+# LDAP
+LDAP = {}
+LDAP['DEBUG'] = project_settings[environment]['django']['LDAP']['DEBUG']
+LDAP['PREBINDDN'] = project_settings[environment]['django']['LDAP']['PREBINDDN']
+LDAP['SEARCHDN'] = project_settings[environment]['django']['LDAP']['SEARCHDN']
+LDAP['SEARCH_FILTER'] = project_settings[environment]['django']['LDAP']['SEARCH_FILTER']
+LDAP['SERVER_URI'] = project_settings[environment]['django']['LDAP']['SERVER_URI']
+LDAP['PREBINDPW'] = project_settings[environment]['django']['LDAP']['PREBINDPW']
+
+#REGISTRATION_MODERATORS = project_settings[environment]['django']['REGISTRATION_MODERATORS']
