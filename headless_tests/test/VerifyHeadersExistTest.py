@@ -5,39 +5,45 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 import unittest, time, re
 
-class VerifyHeadersExist(unittest.TestCase):
+class VerifyHeadersExistTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.PhantomJS()
         self.driver.implicitly_wait(30)
         self.base_url = "http://0.0.0.0:8000/"
         self.verificationErrors = []
         self.accept_next_alert = True
-    
+
     def test_verify_headers_exist(self):
         driver = self.driver
-        driver.get(self.base_url + "/login/")
+        driver.set_window_size(1440, 900)
+        driver.get(self.base_url + "login/")
         driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()
         driver.find_element_by_id("id_password").send_keys("test")
         driver.find_element_by_css_selector("button.btn-info.btn").click()
         driver.find_element_by_link_text("Workspace").click()
-        driver.find_element_by_xpath("//div[@id='wrap']/div/div/div/ul/li[2]/a/span").click()
-        driver.find_element_by_xpath("//div[@id='wrap']/div/div/div/ul/li[3]/a/span").click()
         driver.find_element_by_link_text("Query").click()
-        driver.find_element_by_link_text("test").click()
+        driver.find_element_by_link_text("Results").click()
+        for i in range(60):
+            try:
+                if self.is_element_present(By.CSS_SELECTOR, "div.table-region"): break
+            except: pass
+            time.sleep(1)
+        else: self.fail("time out")
+        driver.find_element_by_link_text("user002").click()
         driver.find_element_by_link_text("Logout").click()
-    
+
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
         except NoSuchElementException, e: return False
         return True
-    
+
     def is_alert_present(self):
         try: self.driver.switch_to_alert()
         except NoAlertPresentException, e: return False
         return True
-    
+
     def close_alert_and_get_its_text(self):
         try:
             alert = self.driver.switch_to_alert()
@@ -48,7 +54,7 @@ class VerifyHeadersExist(unittest.TestCase):
                 alert.dismiss()
             return alert_text
         finally: self.accept_next_alert = True
-    
+
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)

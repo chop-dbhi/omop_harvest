@@ -1,8 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 import unittest, time, re
-
 
 class VerifyPersonExistsResultsVisible(unittest.TestCase):
     def setUp(self):
@@ -22,50 +23,27 @@ class VerifyPersonExistsResultsVisible(unittest.TestCase):
         driver.find_element_by_css_selector("button.btn-info.btn").click()
         for i in range(60):
             try:
-                if self.is_element_present(By.CSS_SELECTOR, "div.heading"):
-                    break
-            except:
-                pass
+                if self.is_element_present(By.CSS_SELECTOR, "div.heading"): break
+            except: pass
             time.sleep(1)
-        else:
-            self.fail("time out")
+        else: self.fail("time out")
         driver.find_element_by_css_selector("div.heading").click()
         driver.find_element_by_link_text("Person ID").click()
         for i in range(60):
             try:
-                if self.is_element_present(By.CSS_SELECTOR, "div.value-item"):
-                    break
-            except:
-                pass
+                if self.is_element_present(By.CSS_SELECTOR, "div.value-item"): break
+            except: pass
             time.sleep(1)
-        else:
-            self.fail("time out")
+        else: self.fail("time out")
         driver.find_element_by_xpath("//div[4]/div/div/div/div/div/div[3]/div/div/div/div/button").click()
         driver.find_element_by_xpath("//div[5]/button[2]").click()
         driver.find_element_by_xpath("//button[2]").click()
         for i in range(60):
             try:
-                if self.is_element_present(By.CSS_SELECTOR, "tbody"):
-                    break
-            except:
-                pass
+                if self.is_element_present(By.CSS_SELECTOR, "div.table-region"): break
+            except: pass
             time.sleep(1)
-        else:
-            self.fail("time out")
-        driver.find_element_by_xpath("//div[@id='wrap']/div/div/div/ul/li[2]/a/span").click()
-        driver.find_element_by_xpath("//div[@id='c1f1']/div[4]/div/div/div/div/div/div[3]/div/div/div/div/button[2]").click()
-        driver.find_element_by_xpath("//div[2]/div/div/div/button").click()
-        driver.find_element_by_xpath("//button[2]").click()
-        for i in range(60):
-            try:
-                if self.is_element_present(By.CSS_SELECTOR, "tbody"):
-                    break
-            except:
-                pass
-            time.sleep(1)
-        else:
-            self.fail("time out")
-        driver.find_element_by_link_text("Query").click()
+        else: self.fail("time out")
         driver.find_element_by_link_text("user002").click()
         driver.find_element_by_link_text("Logout").click()
 
