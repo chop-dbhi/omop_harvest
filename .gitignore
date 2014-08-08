@@ -5,6 +5,9 @@
 *.sw?
 *~
 
+#Backup files
+*.bk
+
 # Python ignores
 *.ipynb
 *.py?
