@@ -16,13 +16,14 @@ if [ "$CID_ENV" = "research.chop.edu" ]; then
     cd /opt/apps/harvest-app/cid/research.chop.edu/logstash && /opt/ve/harvest-app/bin/python get_logstash_config.py
 
     # Build and Run
-    cd /opt/apps/harvest-app/ && make build
-    cd /opt/apps/harvest-app/ && make sass
-    cd /opt/apps/harvest-app/ && make collect
+    DJANGO_SETTINGS_MODULE=omop_harvest.conf.setting
+    cd /opt/apps/harvest-app/ && DJANGO_SETTINGS_MODULE=omop_harvest.conf.setting make build
+    cd /opt/apps/harvest-app/ && DJANGO_SETTINGS_MODULE=omop_harvest.conf.setting make sass
+    cd /opt/apps/harvest-app/ && DJANGO_SETTINGS_MODULE=omop_harvest.conf.setting make collect
     #cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py syncdb --noinput
     #cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py migrate --noinput
     cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py collectstatic --noinput
-    cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py rebuild_index --noinput
+    #cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py rebuild_index --noinput
     supervisord -c /opt/supervisor_run.conf -n 
     #supervisord -c /opt/supervisor_logstash_run.conf 
 else
