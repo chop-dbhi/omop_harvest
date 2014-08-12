@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 import unittest, time, re
 
-class VerifyCanSaveQuery(unittest.TestCase):
+class VerifyClickOfGraphsChangeColor(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.PhantomJS()
         self.driver.implicitly_wait(30)
@@ -13,35 +13,38 @@ class VerifyCanSaveQuery(unittest.TestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
 
-    def test_verify_can_save_query(self):
+    def test_verify_click_of_graphs_change_color(self):
         driver = self.driver
         driver.set_window_size(1440, 900)
         driver.get(self.base_url + "login/")
-        driver.find_element_by_id("id_username").clear()
-        driver.find_element_by_id("id_username").send_keys("user")
         driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()
         driver.find_element_by_id("id_password").send_keys("test")
         driver.find_element_by_css_selector("button.btn-info.btn").click()
-        driver.find_element_by_link_text("Results").click()
         for i in range(60):
             try:
-                if self.is_element_present(By.CSS_SELECTOR, "button[data-toggle='query-dialog']"): break
+                if self.is_element_present(By.CSS_SELECTOR, "div.heading"): break
             except: pass
             time.sleep(1)
         else: self.fail("time out")
-        driver.find_element_by_css_selector("button[data-toggle='query-dialog']").click()
-        driver.find_element_by_css_selector("input.query-description.span12").clear()
-        driver.find_element_by_css_selector("input.query-description.span12").send_keys("Hi I'm a query")
-        driver.find_element_by_xpath("//div[5]/div[3]/button[2]").click()
-        driver.find_element_by_link_text("Workspace").click()
+        driver.find_element_by_xpath("//span/i").click()
+        driver.find_element_by_link_text("Gender").click()
         for i in range(60):
             try:
-                if self.is_element_present(By.CSS_SELECTOR, "div.query-item"): break
+                if self.is_element_present(By.CSS_SELECTOR, "div.bar-mask"): break
             except: pass
             time.sleep(1)
         else: self.fail("time out")
+        driver.find_element_by_css_selector("div.bar-mask").click()
+        driver.find_element_by_name("exclude").click()
+        for i in range(60):
+            try:
+                if self.is_element_present(By.CSS_SELECTOR, "div.selected"): break
+            except: pass
+            time.sleep(1)
+        else: self.fail("time out")
+        driver.find_element_by_name("exclude").click()
         driver.find_element_by_link_text("user002").click()
         driver.find_element_by_link_text("Logout").click()
 

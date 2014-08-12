@@ -12,9 +12,10 @@ class VerifyPersonConceptData(unittest.TestCase):
         self.base_url = "http://0.0.0.0:8000/"
         self.verificationErrors = []
         self.accept_next_alert = True
-    
+
     def test_verify_person_concept_data(self):
         driver = self.driver
+        driver.set_window_size(1440, 900)
         driver.get(self.base_url + "login/")
         driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
@@ -115,17 +116,17 @@ class VerifyPersonConceptData(unittest.TestCase):
         driver.find_element_by_xpath("//div[@id='context-panel']/div/div/div/div/button").click()
         driver.find_element_by_link_text("user002").click()
         driver.find_element_by_link_text("Logout").click()
-    
+
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
         except NoSuchElementException, e: return False
         return True
-    
+
     def is_alert_present(self):
         try: self.driver.switch_to_alert()
         except NoAlertPresentException, e: return False
         return True
-    
+
     def close_alert_and_get_its_text(self):
         try:
             alert = self.driver.switch_to_alert()
@@ -136,7 +137,7 @@ class VerifyPersonConceptData(unittest.TestCase):
                 alert.dismiss()
             return alert_text
         finally: self.accept_next_alert = True
-    
+
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)

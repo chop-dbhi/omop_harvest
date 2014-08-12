@@ -12,13 +12,13 @@ class AllConceptsArePresentVerifyTest(unittest.TestCase):
         self.base_url = "http://0.0.0.0:8000/"
         self.verificationErrors = []
         self.accept_next_alert = True
-    
+
     def test_all_concepts_are_present_verify(self):
         driver = self.driver
-        driver.get(self.base_url + '/login/')
-        driver.find_element_by_link_text("Explore OMOP Harvest").click()
+        driver.set_window_size(2000, 1900)
+        driver.get(self.base_url + 'login/')
         driver.find_element_by_id("id_username").clear()
-        driver.find_element_by_id("id_username").send_keys("test")
+        driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()
         driver.find_element_by_id("id_password").send_keys("test")
         driver.find_element_by_css_selector("button.btn-info.btn").click()
@@ -45,21 +45,19 @@ class AllConceptsArePresentVerifyTest(unittest.TestCase):
         driver.find_element_by_link_text("Source Name").click()
         driver.find_element_by_link_text("Zip Code").click()
         driver.find_element_by_xpath("//div[4]/div").click()
-        driver.find_element_by_xpath("(//a[contains(text(),'Source Name')])[2]").click()
-        driver.find_element_by_css_selector("span.hidden-phone").click()
-        driver.find_element_by_link_text("test").click()
+        driver.find_element_by_link_text("user002").click()
         driver.find_element_by_link_text("Logout").click()
-    
+
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
         except NoSuchElementException, e: return False
         return True
-    
+
     def is_alert_present(self):
         try: self.driver.switch_to_alert()
         except NoAlertPresentException, e: return False
         return True
-    
+
     def close_alert_and_get_its_text(self):
         try:
             alert = self.driver.switch_to_alert()
@@ -70,7 +68,7 @@ class AllConceptsArePresentVerifyTest(unittest.TestCase):
                 alert.dismiss()
             return alert_text
         finally: self.accept_next_alert = True
-    
+
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
