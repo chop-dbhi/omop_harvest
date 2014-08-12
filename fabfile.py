@@ -159,7 +159,16 @@ def build_container(noinput=False):
 def test_container():
     git_hash = local('git rev-parse --short HEAD', capture=True)
     git_branch = local('git rev-parse --abbrev-ref HEAD', capture=True)
-    local('docker run -i -t -e APP_ENV=test omop_harvest-{0}:{1} test'.format(git_branch, git_hash))
+    #local('docker run -i -t -e APP_ENV=test omop_harvest-{0}:{1} test'.format(git_branch, git_hash))
+
+    #Temporary:  Anticipating new version of ATI Template
+    local('docker run --link memcache:mc -d -p :8000 -e CID_ENV={0} -e APP_ENV={1} omop_harvest-{2}:{3} test'.format(
+        env.cid_env,
+        env.host,
+        git_branch,
+        git_hash)
+    )
+    #
 
 def build_and_test():
     build_container(noinput=True)
@@ -198,11 +207,12 @@ def deploy(commit='latest'):
     #)
 
     #Temporary:  Anticipating new version of ATI Template
-    container = run('docker run --link memcache:mc -d -p :8000 -e APP_ENV={0} {1}/omop_harvest-{2}:{3} start'.format(
+    container = run('docker run --hostname=omop-harvest-{2}-{3} --link memcache:mc -d -p :8000 -e CID_ENV={4} -e APP_ENV={0} {1}/omop_harvest-{2}:{3} start'.format(
         env.host,
         project_config['docker_registry'],
         env.git_branch,
-        commit)
+        commit,
+        env.cid_env)
     )
     #
 

@@ -5,6 +5,9 @@
 *.sw?
 *~
 
+#Backup files
+*.bk
+
 # Python ignores
 *.ipynb
 *.py?
@@ -24,7 +27,6 @@ MANIFEST
 
 # Fabric hosts if using the provided fabfile.py
 .fabhosts
-.project_config.json
 
 # Avocado search engine index
 whoosh.index
@@ -56,3 +58,9 @@ bin/imanage.py
 
 # Ulysses editor external source index file
 .Ulysses-Group.plist
+
+#Ignore Certain CID files
+.project_config.json
+cid/research.chop.edu/tests
+cid/research.chop.edu/data
+cid/research.chop.edu/logstash/omop_harvest.logstash.conf

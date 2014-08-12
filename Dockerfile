@@ -35,22 +35,6 @@ RUN /opt/ve/harvest-app/bin/pip install "Markdown"
 RUN /opt/ve/harvest-app/bin/pip install "pycap"
 RUN /opt/ve/harvest-app/bin/pip install "csvkit"
 
-# Anything run after the "Add" command is not cached.
-ADD continuous_deployment/configuration/supervisor_deploy.conf /opt/supervisor_deploy.conf
-ADD continuous_deployment/configuration/supervisor_run.conf /opt/supervisor_run.conf
-ADD continuous_deployment/scripts/start.sh /usr/local/bin/start
-ADD continuous_deployment/scripts/test.sh /usr/local/bin/test
-ADD continuous_deployment/scripts/etl.sh /usr/local/bin/etl
-ADD continuous_deployment/scripts/debug.sh /usr/local/bin/debug
-ADD continuous_deployment/scripts/heartbeat.sh /usr/local/bin/heartbeat
-
-RUN chmod +x /usr/local/bin/debug
-RUN chmod +x /usr/local/bin/start
-RUN chmod +x /usr/local/bin/test
-RUN chmod +x /usr/local/bin/heartbeat
-RUN chmod +x /usr/local/bin/etl
-
-
 # Scala needed for DataExpress scripts
 RUN apt-get update -qq
 RUN apt-get install -y openjdk-6-jre libjansi-java
@@ -108,19 +92,34 @@ RUN /opt/ve/harvest-app/bin/pip install -U "avocado>=2.3.0,<2.4.0" "whoosh>=2.6,
 # Add the application files
 ADD . /opt/apps/harvest-app
 
+# Copy in and setup chop environment specifics
+ADD cid/research.chop.edu/configuration/supervisor_deploy.conf /opt/supervisor_deploy.conf
+ADD cid/research.chop.edu/configuration/supervisor_run.conf /opt/supervisor_run.conf
+ADD cid/research.chop.edu/scripts/start.sh /usr/local/bin/start
+ADD cid/research.chop.edu/scripts/test.sh /usr/local/bin/test
+ADD cid/research.chop.edu/scripts/etl.sh /usr/local/bin/etl
+ADD cid/research.chop.edu/scripts/debug.sh /usr/local/bin/debug
+ADD cid/research.chop.edu/scripts/heartbeat.sh /usr/local/bin/heartbeat
+
+RUN chmod +x /usr/local/bin/debug
+RUN chmod +x /usr/local/bin/start
+RUN chmod +x /usr/local/bin/test
+RUN chmod +x /usr/local/bin/heartbeat
+RUN chmod +x /usr/local/bin/etl
+
+RUN chmod +x /opt/apps/harvest-app/run-tests.sh
+RUN chmod +x /opt/apps/harvest-app/run-headless-tests.sh
+RUN chmod +x /usr/local/bin/start
+
 # Ensure all python requirements are met
 ENV APP_NAME omop_harvest
 RUN /opt/ve/harvest-app/bin/pip install -r /opt/apps/harvest-app/requirements.txt --use-mirrors
 
-# Add custom start script for continuous deployment/override default
-ADD continuous_deployment/custom/scripts/start.sh /usr/local/bin/start
-
-# Add custom script for loading an initial database
-ADD continuous_deployment/data_service/scripts/load_initial_data.sh /usr/local/bin/load_initial_data
-
-RUN chmod +x /opt/apps/harvest-app/run-tests.sh
-
-RUN chmod +x /usr/local/bin/start
+# Add Optional Logstash Logging Support
+RUN curl https://download.elasticsearch.org/logstash/logstash/logstash-1.4.2.tar.gz -o /tmp/logstash-1.4.2.tar.gz
+RUN tar -xvf /tmp/logstash-1.4.2.tar.gz -C /opt/
+RUN mv /opt/logstash-1.4.2 /opt/logstash
+RUN chmod +x -R /opt/logstash/bin/
 
 ENV ETCD_HOST ''
 
