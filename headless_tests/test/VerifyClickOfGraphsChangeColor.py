@@ -15,6 +15,7 @@ class VerifyClickOfGraphsChangeColor(unittest.TestCase):
 
     def test_verify_click_of_graphs_change_color(self):
         driver = self.driver
+        print "click on graph test\n"
         driver.set_window_size(1440, 900)
         driver.get(self.base_url + "login/")
         driver.find_element_by_id("id_username").clear()
