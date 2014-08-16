@@ -1,24 +1,32 @@
 --allow-external argparse
-Django>=1.5.5,<1.6
+django>=1.5,<1.6
 Markdown
 uWSGI
-Fabric>=1.8
+fabric==1.8.0
 
 # Database Drivers, the Python stdlib has support for SQLite
-psycopg2
-csvkit
-# cx_oracle
-# mysql-python
+psycopg2==2.5.1
 
 # Harvest components
 avocado>=2.3.0,<2.4.0
 serrano>=2.3.0,<2.3.3
-django-haystack>=2.0,<2.2
-python-memcached==1.53
-
+modeltree>=1.1.7,<1.2
 
 # Harvest extensions
 whoosh>=2.6,<2.7
+django-haystack>=2.0,<2.2
+python-memcached==1.53
 openpyxl
-django-siteauth==1.0.0
+csvkit
+python-ldap
 django-registration2==0.9.3
+git+http://github.research.chop.edu/cbmi/django-chopauth.git#egg=django-chopauth
+git+http://github.research.chop.edu/cbmi/cbmi-util#egg=chop-util
+dj-database-url==0.2.2
+
+# Testing requirements
+selenium
+coveralls
+discover
+requests
+pytz
