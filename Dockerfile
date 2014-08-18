@@ -38,7 +38,7 @@ RUN /opt/ve/bin/pip install -r /opt/app/requirements.txt --use-mirrors
 
 # Add custom application initialization and run scripts that:
 #   1. don't try to get project settings from etcd
-COPY cid/my_init.d/* /etc/my_init.d/
-COPY cid/service/* /etc/service/
+COPY cid/my_init.d /etc/my_init.d
+COPY cid/service /etc/service
 
 EXPOSE 8000
