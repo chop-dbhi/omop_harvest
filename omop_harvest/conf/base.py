@@ -38,7 +38,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+
+    'chopauth',
+    'registration'
 )
 
 

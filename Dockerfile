@@ -16,6 +16,7 @@ RUN /opt/ve/bin/pip install "whoosh>=2.6,<2.7"
 RUN /opt/ve/bin/pip install "openpyxl"
 RUN /opt/ve/bin/pip install "csvkit"
 RUN /opt/ve/bin/pip install "git+http://github.research.chop.edu/cbmi/django-chopauth.git#egg=django-chopauth"
+RUN /opt/ve/bin/pip install "django-siteauth==1.0.0"
 # Testing requirements
 RUN /opt/ve/bin/pip install "selenium"
 RUN /opt/ve/bin/pip install "coveralls"
