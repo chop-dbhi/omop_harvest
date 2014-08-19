@@ -1,7 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 import unittest, time, re
 
@@ -18,8 +16,6 @@ class VerifyCanSaveQuery(unittest.TestCase):
         driver.set_window_size(1440, 900)
         driver.get(self.base_url + "login/")
         driver.find_element_by_id("id_username").clear()
-        driver.find_element_by_id("id_username").send_keys("user")
-        driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()
         driver.find_element_by_id("id_password").send_keys("test")
@@ -27,14 +23,21 @@ class VerifyCanSaveQuery(unittest.TestCase):
         driver.find_element_by_link_text("Results").click()
         for i in range(60):
             try:
-                if self.is_element_present(By.CSS_SELECTOR, "button[data-toggle='query-dialog']"): break
+                if self.is_element_present(By.CSS_SELECTOR, "table.table-striped"): break
+            except: pass
+            time.sleep(1)
+            print 'waitng ...' , i
+        else: self.fail("time out")
+        driver.find_element_by_xpath("//div/div/button[3]").click()
+        driver.find_element_by_css_selector("input.query-description.span12").clear()
+        driver.find_element_by_css_selector("input.query-description.span12").send_keys("New Query")
+        driver.find_element_by_xpath("//div[5]/div[3]/button[2]").click()
+        for i in range(60):
+            try:
+                if self.is_element_present(By.CSS_SELECTOR, "div.alert"): break
             except: pass
             time.sleep(1)
         else: self.fail("time out")
-        driver.find_element_by_css_selector("button[data-toggle='query-dialog']").click()
-        driver.find_element_by_css_selector("input.query-description.span12").clear()
-        driver.find_element_by_css_selector("input.query-description.span12").send_keys("Hi I'm a query")
-        driver.find_element_by_xpath("//div[5]/div[3]/button[2]").click()
         driver.find_element_by_link_text("Workspace").click()
         for i in range(60):
             try:
@@ -42,6 +45,10 @@ class VerifyCanSaveQuery(unittest.TestCase):
             except: pass
             time.sleep(1)
         else: self.fail("time out")
+        driver.find_element_by_link_text("Show details").click()
+        try: self.assertEqual("New Query", driver.find_element_by_css_selector("span.muted").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_link_text("Hide details").click()
         driver.find_element_by_link_text("user002").click()
         driver.find_element_by_link_text("Logout").click()
 

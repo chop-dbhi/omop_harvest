@@ -4,18 +4,22 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 import unittest, time, re
+import os
 
 class VerifyPersonExistsResultsVisible(unittest.TestCase):
+
     def setUp(self):
+        self.path = os.path.dirname(os.path.realpath(__file__))
         self.driver = webdriver.PhantomJS()
         self.driver.implicitly_wait(30)
-        self.base_url = "http://0.0.0.0:8000/"
+        self.base_url = "http://0.0.0.0:8000"
         self.verificationErrors = []
         self.accept_next_alert = True
 
     def test_verify_person_exists_results_visible(self):
         driver = self.driver
-        driver.get(self.base_url + "login/")
+        driver.set_window_size(2000, 1500)
+        driver.get(self.base_url + "/login/")
         driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()
@@ -35,17 +39,46 @@ class VerifyPersonExistsResultsVisible(unittest.TestCase):
             except: pass
             time.sleep(1)
         else: self.fail("time out")
-        driver.find_element_by_xpath("//div[4]/div/div/div/div/div/div[3]/div/div/div/div/button").click()
-        driver.find_element_by_xpath("//div[5]/button[2]").click()
-        driver.find_element_by_xpath("//button[2]").click()
+        driver.save_screenshot(self.path + '/screenshots/VerifyPersonExistsResultsVisible.png')
+        driver.find_element_by_xpath("//div[@id='c1f1']/div[4]/div/div/div/div/div/div[3]/div/div/div/div/button").click()
+        driver.find_element_by_xpath("//div[@id='c1f1']/div[4]/div/div/div/div/div/div[3]/div/div/div[2]/div/button").click()
+        driver.find_element_by_xpath("//div[@id='c1f1']/div[5]/button[2]").click()
+        driver.save_screenshot(self.path + '/screenshots/VerifyPersonExistsResultsVisible.png')
         for i in range(60):
             try:
-                if self.is_element_present(By.CSS_SELECTOR, "div.table-region"): break
+                if self.is_element_present(By.CSS_SELECTOR, "div[data-target=\"description\"]"): break
             except: pass
             time.sleep(1)
         else: self.fail("time out")
+        driver.find_element_by_xpath("//div[@id='context-panel']/div/div[3]/div/button[2]").click()
+        driver.save_screenshot(self.path + '/screenshots/VerifyPersonExistsResultsVisible.png')
+        for i in range(60):
+            try:
+                if self.is_element_present(By.CSS_SELECTOR, "table.table-striped"): break
+            except: pass
+            time.sleep(1)
+        else: self.fail("time out")
+        driver.find_element_by_link_text("Query").click()
+        for i in range(60):
+            try:
+                if self.is_element_present(By.CSS_SELECTOR, "div[data-target=\"description\"]"): break
+            except: pass
+            time.sleep(1)
+        else: self.fail("time out")
+        for i in range(60):
+            try:
+                if self.is_element_present(By.CSS_SELECTOR, "button[data-action=\"remove\"]"): break
+            except: pass
+            time.sleep(1)
+        else: self.fail("time out")
+        driver.save_screenshot(self.path + '/screenshots/VerifyPersonExistsResultsVisible.png')
+        driver.find_element_by_xpath("//div[@id='context-panel']/div/div/div/div/button").click()
+        driver.find_element_by_xpath("//div[@id='c1f1']/div[4]/div/div/div/div/div/div[3]/div/div/div/div/button[2]").click()
+        driver.find_element_by_xpath("//div[@id='c1f1']/div[4]/div/div/div/div/div/div[3]/div/div/div[2]/div/button[2]").click()
+        driver.save_screenshot(self.path + '/screenshots/VerifyPersonExistsResultsVisible.png')
         driver.find_element_by_link_text("user002").click()
         driver.find_element_by_link_text("Logout").click()
+        driver.save_screenshot(self.path + '/screenshots/VerifyPersonExistsResultsVisible.png')
 
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
