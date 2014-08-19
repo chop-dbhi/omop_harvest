@@ -351,7 +351,7 @@ SITE_ID = 1
 
 MODELTREES = {
     'default': {
-        'model': 'omop.Person',
+        'model': 'omop_harvest.Person',
     }
 }
 
