@@ -4,6 +4,12 @@ FROM reslnops01.research.chop.edu:5000/django_baseimage-master:d87766f
 
 MAINTAINER Aaron Browne <brownea@email.chop.edu>
 
+# Install postgresql client
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/apt/sources.list.d/pgdg.list 
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN apt-get update -qq --fix-missing
+RUN apt-get install -y postgresql-client-9.3
+
 # Install required python packages not provided by django_baseimage
 # Harvest components
 RUN /opt/ve/bin/pip install "avocado>=2.3.0,<2.4"
