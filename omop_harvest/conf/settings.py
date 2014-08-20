@@ -53,6 +53,8 @@ FORCE_SCRIPT_NAME = project_settings[environment]['django']['FORCE_SCRIPT_NAME']
 
 SECRET_KEY = project_settings[environment]['django']['SECRET_KEY']
 
+ALLOWED_HOSTS = project_settings[environment]['django']['ALLOWED_HOSTS']
+
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(FORCE_SCRIPT_NAME, ADMIN_MEDIA_PREFIX[1:])
 
