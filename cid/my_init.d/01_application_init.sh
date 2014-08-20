@@ -8,6 +8,5 @@ source /opt/ve/bin/activate
 python bin/manage.py syncdb --noinput
 python bin/manage.py migrate --noinput
 python bin/manage.py collectstatic --noinput
-make build
 
 deactivate

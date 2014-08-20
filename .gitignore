@@ -38,9 +38,6 @@ settings
 # Ignore sqlite db used for testing
 omop_harvest.db
 
-# Ignore optimized scripts
-omop_harvest/static/scripts/javascript/min
-
 # Collected static files via Django's staticfiles app
 _site/static
 
