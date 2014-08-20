@@ -29,7 +29,8 @@ if LINKED_DB_IP:
     }
 else:
     DATABASES = {
-        'default': dj_database_url.parse(project_settings[environment]['databases']['default'])
+        'default': dj_database_url.parse(project_settings[environment]['databases']['default']),
+        'omop': dj_database_url.parse(project_settings[environment]['databases']['omop'])
     }
 
 
