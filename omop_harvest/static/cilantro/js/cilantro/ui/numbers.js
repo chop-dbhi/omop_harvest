@@ -1,2 +1,2 @@
-define(["./core"],function(t){return{renderCount:function(e,n,r){return null==r&&(r="<em>n/a</em>"),null==n?e.html(r):e.html(t.utils.prettyNumber(n,t.config.get("threshold"))).attr("title",t.utils.toDelimitedNumber(n))}}});
-//# sourceMappingURL=numbers.js.map
+define(["./core"],function(e){var t=function(t,i,n){n||(n="<em>n/a</em>"),i?t.html(e.utils.prettyNumber(i,e.config.get("threshold"))).attr("title",e.utils.toDelimitedNumber(i)):t.html(n)};return{renderCount:t}});
+//@ sourceMappingURL=numbers.js.map

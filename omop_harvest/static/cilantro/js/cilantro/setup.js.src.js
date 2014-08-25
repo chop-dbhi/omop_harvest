@@ -81,7 +81,8 @@ define([
     $(document).ajaxError(function(event, xhr, settings, exception) {
         // A statusText value of 'abort' is an aborted request which is
         // usually intentional by the app or from a page reload.
-        if (xhr.statusText === 'abort') return;
+        if (xhr.statusText === 'abort' ||
+            (xhr.status >= 300 && xhr.status < 400) ) return;
 
         var message = '';
 
@@ -95,9 +96,10 @@ define([
                 '<a href="#" onclick="location.reload()">Refreshing</a> ' +
                 'the page may help.';
         }
+
         c.notify({
             timeout: null,
-            dismissable: false,
+            dismissable: true,
             level: 'error',
             header: 'Uh oh.',
             message: message

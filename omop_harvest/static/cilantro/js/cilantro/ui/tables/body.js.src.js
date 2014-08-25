@@ -1,33 +1,37 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+/* global define */
 
-define(['underscore', 'marionette', './row'], function(_, Marionette, row) {
-  var Body;
-  Body = (function(_super) {
-    __extends(Body, _super);
+define([
+    'jquery',
+    'underscore',
+    'marionette',
+    './row'
+], function($, _, Marionette, row) {
 
-    function Body() {
-      this.itemViewOptions = __bind(this.itemViewOptions, this);
-      return Body.__super__.constructor.apply(this, arguments);
-    }
+    // Represent a "frame" of rows. The model is referenced for keeping
+    // track which frame this is relative to the whole series.
+    var Body = Marionette.CollectionView.extend({
+        tagName: 'tbody',
 
-    Body.prototype.tagName = 'tbody';
+        itemView: row.Row,
 
-    Body.prototype.template = function() {};
+        onRender: function() {
+            var offset = 0;
 
-    Body.prototype.itemView = row.Row;
+            $('.navbar-fixed-top').each(function() {
+                offset += this.clientHeight;
+            });
 
-    Body.prototype.itemViewOptions = function(model, index) {
-      return _.defaults({
-        collection: model.data
-      }, this.options);
+            this.$el.css('top', offset);
+            this.$el.css('position', 'absolute');
+        },
+
+        itemViewOptions: function(model) {
+            return _.defaults({collection: model.data}, this.options);
+        }
+    });
+
+    return {
+        Body: Body
     };
 
-    return Body;
-
-  })(Marionette.CollectionView);
-  return {
-    Body: Body
-  };
 });
