@@ -1,2 +1,2 @@
-var __slice=[].slice;define(["underscore","./charts/dist","./charts/axis","./charts/editable"],function(){var e,a;return a=arguments[0],e=2<=arguments.length?__slice.call(arguments,1):[],a.extend.apply(a,[{}].concat(__slice.call(e)))});
-//# sourceMappingURL=charts.js.map
+define(["underscore","./charts/dist","./charts/axis","./charts/editable"],function(t){var e=Array.prototype.slice.call(arguments,1);return t.extend.apply(t,[{}].concat(e))});
+//@ sourceMappingURL=charts.js.map
