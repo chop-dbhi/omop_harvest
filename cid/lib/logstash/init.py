@@ -42,3 +42,5 @@ def write_config(file_name='omop_harvest.logstash.conf')
       #Write the output
       outfile.write("{0} {1} {2} ".format("output {", config['output'], " } ") )
       outfile.close()
+
+write_config()

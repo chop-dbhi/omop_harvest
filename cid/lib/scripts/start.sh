@@ -4,7 +4,7 @@ if [ "$CID_ENV" = "research.chop.edu" ]; then
     # Install CHOP Authentication for CHOP/CID
     cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/pip install -r /opt/apps/harvest-app/cid/research.chop.edu/requirements.txt
     cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/pip install http://github.research.chop.edu/cbmi/django-chopauth/archive/master.tar.gz
-    
+
     # Copy in and setup cid_env  specific files
     cd /opt/apps/harvest-app/ && cp cid/research.chop.edu/app/conf/app.py omop_harvest/conf/app.py
     cd /opt/apps/harvest-app/ && cp cid/research.chop.edu/logstash/supervisor_logstash_run.conf /opt/supervisor_logstash_run.conf
@@ -24,8 +24,8 @@ if [ "$CID_ENV" = "research.chop.edu" ]; then
     #cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py migrate --noinput
     cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py collectstatic --noinput
     #cd /opt/apps/harvest-app/ && /opt/ve/harvest-app/bin/python ./bin/manage.py rebuild_index --noinput
-    supervisord -c /opt/supervisor_run.conf -n 
-    #supervisord -c /opt/supervisor_logstash_run.conf 
+    supervisord -c /opt/supervisor_run.conf -n
+    #supervisord -c /opt/supervisor_logstash_run.conf
 else
 
     # Copy in and setup cid_env  specific files
