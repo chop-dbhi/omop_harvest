@@ -1,20 +1,24 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-import unittest, time, re
+import unittest, time, re, os
 
 class VerifyCanSaveQuery(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.PhantomJS()
         self.driver.implicitly_wait(30)
-        self.base_url = "http://0.0.0.0:8000"
+        self.base_url = os.environ['TEST_BASE_URL']
+	if 'http://' not in self.base_url:
+		self.base_url = 'http://' + self.base_url
+        if self.base_url[-1] != '/':
+            self.base_url += '/'
         self.verificationErrors = []
         self.accept_next_alert = True
 
     def test_verify_can_save_query(self):
         driver = self.driver
         driver.set_window_size(1440, 900)
-        driver.get(self.base_url + "/login/")
+        driver.get(self.base_url + "login/")
         driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()

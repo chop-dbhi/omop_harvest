@@ -12,14 +12,18 @@ class VerifyPersonExistsResultsVisible(unittest.TestCase):
         self.path = os.path.dirname(os.path.realpath(__file__))
         self.driver = webdriver.PhantomJS()
         self.driver.implicitly_wait(30)
-        self.base_url = "http://0.0.0.0:8000"
+        self.base_url = os.environ['TEST_BASE_URL']
+	if 'http://' not in self.base_url:
+		self.base_url = 'http://' + self.base_url
+        if self.base_url[-1] != '/':
+            self.base_url += '/'
         self.verificationErrors = []
         self.accept_next_alert = True
 
     def test_verify_person_exists_results_visible(self):
         driver = self.driver
         driver.set_window_size(2000, 1500)
-        driver.get(self.base_url + "/login/")
+        driver.get(self.base_url + "login/")
         driver.find_element_by_id("id_username").clear()
         driver.find_element_by_id("id_username").send_keys("user002")
         driver.find_element_by_id("id_password").clear()
