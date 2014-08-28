@@ -1,7 +1,6 @@
 import os
 import json
 from base import *
-from app import *
 import dj_database_url
 
 try:
@@ -25,33 +24,25 @@ LINKED_MEMCACHE = os.environ.get('MC_PORT_11211_TCP_ADDR')
 
 if LINKED_DB_IP:
     DATABASES = {
-        'default': dj_database_url.parse('postgresql://docker:docker@{0}:5432/omop_harvest'.format(LINKED_DB_IP)),
-        'portal': dj_database_url.parse(project_settings[environment]['databases']['portal']),
+        # TODO: Make the db name here dependent on the project_settings
+        'default': dj_database_url.parse('postgresql://docker:docker@{0}:5432/omop_harvest'.format(LINKED_DB_IP))
     }
 else:
     DATABASES = {
         'default': dj_database_url.parse(project_settings[environment]['databases']['default']),
+        'omop': dj_database_url.parse(project_settings[environment]['databases']['omop'])
     }
 
 
 if LINKED_MEMCACHE:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '{0}:11211'.format(LINKED_MEMCACHE),
-            'KEY_PREFIX': 'omop_harvest',
-            'VERSION': 1,
-        }
-    }
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'unique',
-            'KEY_PREFIX': 'omop_harvest',
-            'VERSION': 1,
-        }
-    }
+    CACHES['default'].update({
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '{0}:11211'.format(LINKED_MEMCACHE)
+    })
+
+LDAP = project_settings[environment]['django']['LDAP']
+
+EMAIL_HOST = project_settings[environment]['django']['EMAIL_HOST']
 
 EMAIL_PORT = project_settings[environment]['django']['EMAIL_PORT']
 
@@ -62,3 +53,15 @@ DEBUG = project_settings[environment]['django']['DEBUG']
 FORCE_SCRIPT_NAME = project_settings[environment]['django']['FORCE_SCRIPT_NAME']
 
 SECRET_KEY = project_settings[environment]['django']['SECRET_KEY']
+
+ALLOWED_HOSTS = project_settings[environment]['django']['ALLOWED_HOSTS']
+
+if FORCE_SCRIPT_NAME:
+    ADMIN_MEDIA_PREFIX = os.path.join(FORCE_SCRIPT_NAME, ADMIN_MEDIA_PREFIX[1:])
+
+    STATIC_URL = os.path.join(FORCE_SCRIPT_NAME, STATIC_URL[1:])
+    MEDIA_URL = os.path.join(FORCE_SCRIPT_NAME, MEDIA_URL[1:])
+
+    LOGIN_URL = os.path.join(FORCE_SCRIPT_NAME, LOGIN_URL[1:])
+    LOGOUT_URL = os.path.join(FORCE_SCRIPT_NAME, LOGOUT_URL[1:])
+    LOGIN_REDIRECT_URL = os.path.join(FORCE_SCRIPT_NAME, LOGIN_REDIRECT_URL[1:])

@@ -1,0 +1,1 @@
+define("main",["cilantro"],function(e){e.config.set("fields.instances.1.type","string"),e.config.set("fields.instances.20.type","string"),require(["cilantro/main","project/csrf"])})

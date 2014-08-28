@@ -1,5 +1,9 @@
 # OMOP + Harvest
 
+# This application is temporarily broken for external deployment
+
+In order to more quickly implement the project as part of CHOP's PEDSnet framework, external deployment is currenty broken. Once the omop_harvest application is separated from the pedsnet implementation of the app, as per [this issue](https://github.com/cbmi/omop_harvest/issues/61), the option for external deployment will come back on line. Please contact us at cbmisupport@email.chop.edu if you have urgent need to use the application and we will give you a more specific timeline.
+
 ### Explore the OMOP data model using Harvest
 
 #### Query and explore your dataset by clicking the "Explore OMOP Harvest" link below

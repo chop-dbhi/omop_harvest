@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
 
-    'harvest_data',
+    'chopauth',
+    'registration'
 )
 
 
@@ -48,6 +49,7 @@ INSTALLED_APPS = (
 # ADMINISTRATIVE
 #
 
+# TODO: Add admins here.
 # Admins receive any error messages by email if DEBUG is False
 ADMINS = ()
 
@@ -58,8 +60,27 @@ MANAGERS = ADMINS
 INTERNAL_IPS = ('127.0.0.1', '::1')
 
 DEBUG = True
-
 TEMPLATE_DEBUG = DEBUG
+
+#
+# DATABASES
+# Each database can be specified here, but passwords should be in a separate
+# file that is not versioned. Use ``local_settings.py``.
+#
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_PATH, 'harvest.db')
+    },
+    'omop': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_PATH, 'omop.db')
+    }
+}
+
+DATABASE_ROUTERS = ('omop_harvest.routers.OmopRouter',)
+
 #
 # LOCALITY
 #
@@ -117,13 +138,17 @@ STATIC_URL = '/static/'
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
+# TODO: Remove this. Shouldn't the files at the below location
+# be collected under '_site/static'?
+# Additional locations of static files
+# Put strings here, like "/home/html/static" or "C:/www/django/static".
+# Always use forward slashes, even on Windows.
+# Don't forget to use absolute paths, not relative paths.
+        # project level static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    # project level static files
     os.path.join(PROJECT_PATH, 'omop_harvest', 'static'),
 )
+
 #
 # TEMPLATES
 #
@@ -149,33 +174,42 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 # the WSGI application (static and media files), these need to be updated to
 # reflect this discrepancy.
 FORCE_SCRIPT_NAME = ''
-
+LOGIN_URL = FORCE_SCRIPT_NAME + '/login/'
+LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME + '/query/'
+LOGOUT_URL = '/logout/'
 ROOT_URLCONF = 'omop_harvest.conf.urls'
-
-# LOGIN_URL = '/login/'
-# LOGOUT_URL = '/logout/'
 
 # For non-publicly accessible applications, the siteauth app can be used to
 # restrict access site-wide.
 # SITEAUTH_ACCESS_ORDER = 'allow/deny'
 #
-# SITEAUTH_ALLOW_URLS = (
-#     r'^$',
-#     r'^log(in|out)/',
-#     r'^password/reset/',
-#     r'^(register|verify)/',
-# )
+SITEAUTH_ALLOW_URLS = (
+    r'^log(in|out)/',
+    r'^password/reset/',
+    r'^(register|verify)/',
+)
+
+SITEAUTH_DENY_URLS = (
+    r'^workspace/',
+    r'^workspace/discover/',
+    r'^query/',
+    r'^results/+',
+    r'^api/+',
+    r'^details/\d+/',
+    r'^moderate/+',
+    r'^verify/+',
+)
 
 #
 # MIDDLEWARE
 #
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'siteauth.middleware.SiteAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'serrano.middleware.SessionMiddleware',
 )
@@ -185,8 +219,8 @@ MIDDLEWARE_CLASSES = (
 # EMAIL
 #
 
-SUPPORT_EMAIL = 'support@example.com'
-DEFAULT_FROM_EMAIL = 'support@example.com'
+SUPPORT_EMAIL = 'cbmisupport@email.chop.edu'
+DEFAULT_FROM_EMAIL = 'cbmisupport@email.chop.edu'
 EMAIL_SUBJECT_PREFIX = '[omop_harvest] '
 SEND_BROKEN_LINK_EMAILS = False
 
@@ -298,7 +332,6 @@ SESSION_COOKIE_NAME = 'omop_harvest_sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
 
-
 #
 # OTHER PROJECT SETTINGS
 #
@@ -321,11 +354,16 @@ SITE_ID = 1
 # ModelTrees Configuration
 #
 
-# MODELTREES = {
-#     'default': {
-#         'model': '',
-#     }
-# }
+MODELTREES = {
+    'default': {
+        'model': 'omop_harvest.Person',
+    }
+}
+
+#
+# Haystack Configuration
+#
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
@@ -333,12 +371,12 @@ HAYSTACK_CONNECTIONS = {
     }
 }
 
+#
+# Avocado Configuration
+#
+
+# TODO: Should data_cache_enabled be set to True?
 AVOCADO = {
     'DATA_CACHE_ENABLED': False,
     'METADATA_MIGRATION_APP': 'omop_harvest',
 }
-
-# eHB Plugins Configuration
-PLUGINS = {}
-
-DATABASE_ROUTERS = ['omop_harvest.routers.Router']

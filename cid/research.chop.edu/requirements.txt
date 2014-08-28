@@ -1,8 +1,0 @@
-selenium
-dj-database-url
-coveralls
-discover
-fabric
-python-etcd
-requests
-pytz
