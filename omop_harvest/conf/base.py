@@ -71,10 +71,15 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH, 'omop_harvest.db')
+        'NAME': os.path.join(PROJECT_PATH, 'harvest.db')
+    },
+    'omop': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_PATH, 'omop.db')
     }
 }
-# TODO: Add database router to pull Harvest data away from omop data.
+
+DATABASE_ROUTERS = ('omop_harvest.routers.OmopRouter',)
 
 #
 # LOCALITY

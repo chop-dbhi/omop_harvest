@@ -3,18 +3,23 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
-import unittest, time, re
+import unittest, time, re, os
 
 class VerifyClickOfGraphsChangeColor(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.PhantomJS()
         self.driver.implicitly_wait(30)
-        self.base_url = "http://0.0.0.0:8000/"
+        self.base_url = os.environ['TEST_BASE_URL']
+	if 'http://' not in self.base_url:
+		self.base_url = 'http://' + self.base_url
+        if self.base_url[-1] != '/':
+            self.base_url += '/'
         self.verificationErrors = []
         self.accept_next_alert = True
 
     def test_verify_click_of_graphs_change_color(self):
         driver = self.driver
+        print "click on graph test\n"
         driver.set_window_size(1440, 900)
         driver.get(self.base_url + "login/")
         driver.find_element_by_id("id_username").clear()
