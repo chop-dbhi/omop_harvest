@@ -31,3 +31,12 @@ CREATE MATERIALIZED VIEW visit_procedure_type AS SELECT DISTINCT concept.* FROM 
 CREATE MATERIALIZED VIEW visit_drug AS SELECT DISTINCT drug_exposure.* FROM drug_exposure JOIN visit_occurrence ON drug_exposure.visit_occurrence_id = visit_occurrence.visit_occurrence_id;
 CREATE MATERIALIZED VIEW visit_drug_concept AS SELECT DISTINCT concept.* FROM concept JOIN visit_drug ON concept.concept_id = visit_drug.drug_concept_id;
 CREATE MATERIALIZED VIEW visit_drug_type AS SELECT DISTINCT concept.* FROM concept JOIN visit_drug ON concept.concept_id = visit_drug.drug_type_concept_id;
+CREATE MATERIALIZED VIEW visit_observation AS SELECT DISTINCT observation.* FROM observation JOIN visit_occurrence ON observation.visit_occurrence_id = visit_occurrence.visit_occurrence_id;
+CREATE MATERIALIZED VIEW visit_observation_concept AS SELECT DISTINCT concept.* FROM concept JOIN visit_observation ON concept.concept_id = visit_observation.observation_concept_id;
+CREATE MATERIALIZED VIEW visit_observation_type AS SELECT DISTINCT concept.* FROM concept JOIN visit_observation ON concept.concept_id = visit_observation.observation_type_concept_id;
+CREATE MATERIALIZED VIEW person_condition AS SELECT DISTINCT condition_occurrence.* FROM condition_occurrence JOIN person ON condition_occurrence.person_id = person.person_id;
+CREATE MATERIALIZED VIEW person_condition_concept AS SELECT DISTINCT concept.* FROM concept JOIN person_condition ON concept.concept_id = person_condition.condition_concept_id;
+CREATE MATERIALIZED VIEW person_condition_type AS SELECT DISTINCT concept.* FROM concept JOIN person_condition ON concept.concept_id = person_condition.condition_type_concept_id;
+CREATE MATERIALIZED VIEW person_observation AS SELECT DISTINCT observation.* FROM observation JOIN person ON observation.person_id = person.person_id;
+CREATE MATERIALIZED VIEW person_observation_concept AS SELECT DISTINCT concept.* FROM concept JOIN person_observation ON concept.concept_id = person_observation.observation_concept_id;
+CREATE MATERIALIZED VIEW person_observation_type AS SELECT DISTINCT concept.* FROM concept JOIN person_observation ON concept.concept_id = person_observation.observation_type_concept_id;
