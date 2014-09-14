@@ -14,6 +14,15 @@ DROP MATERIALIZED VIEW IF EXISTS visit_procedure_type CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS visit_drug CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS visit_drug_concept CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS visit_drug_type CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS visit_observation CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS visit_observation_concept CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS visit_observation_type CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS person_condition CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS person_condition_concept CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS person_condition_type CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS person_observation CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS person_observation_concept CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS person_observation_type CASCADE;
 
 CREATE MATERIALIZED VIEW gender AS SELECT DISTINCT concept.* FROM concept JOIN person ON concept.concept_id = person.gender_concept_id;
 CREATE MATERIALIZED VIEW race AS SELECT DISTINCT concept.* FROM concept JOIN person ON concept.concept_id = person.race_concept_id;

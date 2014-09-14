@@ -276,7 +276,7 @@ class VisitDrugType(models.Model):
 class VisitObservation(models.Model):
     observation_id = models.BigIntegerField(primary_key=True)
     person_id = models.BigIntegerField()
-    observation_concept_id = models.ForeignKey('VisitObservationConcept')
+    observation_concept = models.ForeignKey('VisitObservationConcept')
     observation_date = models.DateField()
     observation_time = models.TimeField(null=True, blank=True)
     value_as_number = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
@@ -285,8 +285,8 @@ class VisitObservation(models.Model):
     unit_concept_id = models.IntegerField(null=True, blank=True)
     range_low = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     range_high = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
-    observation_type_concept_id = models.ForeignKey('VisitObservationType')
-    associated_provider = models.BigIntegerField()
+    observation_type_concept = models.ForeignKey('VisitObservationType')
+    associated_provider_id = models.BigIntegerField()
     visit_occurrence = models.ForeignKey('Visit', null=True, blank=True)
     relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
     observation_source_value = models.CharField(max_length=50, blank=True)
@@ -322,14 +322,14 @@ class VisitObservationType(models.Model):
 
 class PersonCondition(models.Model):
     condition_occurrence_id = models.BigIntegerField(primary_key=True)
-    person_id = models.ForeignKey('Person')
+    person = models.ForeignKey('Person')
     condition_concept = models.ForeignKey('PersonConditionConcept')
     condition_start_date = models.DateTimeField()
     condition_end_date = models.DateTimeField(null=True, blank=True)
     condition_type_concept = models.ForeignKey('PersonConditionType')
     stop_reason = models.CharField(max_length=20, blank=True)
     associated_provider_id = models.BigIntegerField(null=True, blank=True)
-    visit_occurrence = models.BigIntegerField(null=True, blank=True)
+    visit_occurrence_id = models.BigIntegerField(null=True, blank=True)
     condition_source_value = models.CharField(max_length=50, blank=True)
     class Meta:
         db_table = 'person_condition'
@@ -362,8 +362,8 @@ class PersonConditionType(models.Model):
 
 class PersonObservation(models.Model):
     observation_id = models.BigIntegerField(primary_key=True)
-    person_id = models.ForeignKey('Person')
-    observation_concept_id = models.ForeignKey('PersonObservationConcept')
+    person = models.ForeignKey('Person')
+    observation_concept = models.ForeignKey('PersonObservationConcept')
     observation_date = models.DateField()
     observation_time = models.TimeField(null=True, blank=True)
     value_as_number = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
@@ -372,9 +372,9 @@ class PersonObservation(models.Model):
     unit_concept_id = models.IntegerField(null=True, blank=True)
     range_low = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     range_high = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
-    observation_type_concept_id = models.ForeignKey('PersonObservationType')
-    associated_provider = models.BigIntegerField()
-    visit_occurrence = models.BigIntegerField(null=True, blank=True)
+    observation_type_concept = models.ForeignKey('PersonObservationType')
+    associated_provider_id = models.BigIntegerField()
+    visit_occurrence_id = models.BigIntegerField(null=True, blank=True)
     relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
     observation_source_value = models.CharField(max_length=50, blank=True)
     units_source_value = models.CharField(max_length=50, blank=True)
