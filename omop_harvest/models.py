@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class Person(models.Model):
-    person_id = models.IntegerField(primary_key=True)
+    person_id = models.BigIntegerField(primary_key=True)
     gender_concept = models.ForeignKey('Gender', null=True, blank=True)
     year_of_birth = models.DecimalField(max_digits=4, decimal_places=0)
     month_of_birth = models.DecimalField(null=True, max_digits=2, decimal_places=0, blank=True)
@@ -59,7 +59,7 @@ class Ethnicity(models.Model):
         db_table = 'ethnicity'
 
 class PersonLocation(models.Model):
-    location_id = models.IntegerField(primary_key=True)
+    location_id = models.BigIntegerField(primary_key=True)
     address_1 = models.CharField(max_length=50, blank=True)
     address_2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50, blank=True)
@@ -71,11 +71,11 @@ class PersonLocation(models.Model):
         db_table = 'person_location'
 
 class Provider(models.Model):
-    provider_id = models.IntegerField(primary_key=True)
+    provider_id = models.BigIntegerField(primary_key=True)
     npi = models.CharField(max_length=20, blank=True)
     dea = models.CharField(max_length=20, blank=True)
     specialty_concept = models.ForeignKey('ProviderSpecialty', null=True, blank=True)
-    care_site_id = models.IntegerField(null=True, blank=True)
+    care_site_id = models.BigIntegerField(null=True, blank=True)
     provider_source_value = models.CharField(max_length=50)
     specialty_source_value = models.CharField(max_length=50, blank=True)
     class Meta:
@@ -95,7 +95,7 @@ class ProviderSpecialty(models.Model):
         db_table = 'provider_specialty'
 
 class CareSite(models.Model):
-    care_site_id = models.IntegerField(primary_key=True)
+    care_site_id = models.BigIntegerField(primary_key=True)
     location = models.ForeignKey('CareSiteLocation', null=True, blank=True)
     organization = models.ForeignKey('Organization', null=True, blank=True)
     place_of_service_concept = models.ForeignKey('CareSitePOS', null=True, blank=True)
@@ -105,7 +105,7 @@ class CareSite(models.Model):
         db_table = 'care_site'
 
 class CareSiteLocation(models.Model):
-    location_id = models.IntegerField(primary_key=True)
+    location_id = models.BigIntegerField(primary_key=True)
     address_1 = models.CharField(max_length=50, blank=True)
     address_2 = models.CharField(max_length=50, blank=True)
     city = models.CharField(max_length=50, blank=True)
@@ -117,9 +117,9 @@ class CareSiteLocation(models.Model):
         db_table = 'care_site_location'
 
 class Organization(models.Model):
-    organization_id = models.IntegerField(primary_key=True)
+    organization_id = models.BigIntegerField(primary_key=True)
     place_of_service_concept_id = models.IntegerField(null=True, blank=True)
-    location_id = models.IntegerField(null=True, blank=True)
+    location_id = models.BigIntegerField(null=True, blank=True)
     organization_source_value = models.CharField(max_length=50, blank=True)
     place_of_service_source_value = models.CharField(max_length=50, blank=True)
     class Meta:
@@ -139,25 +139,25 @@ class CareSitePOS(models.Model):
         db_table = 'care_site_pos'
 
 class Visit(models.Model):
-    visit_occurrence_id = models.IntegerField(primary_key=True)
+    visit_occurrence_id = models.BigIntegerField(primary_key=True)
     person = models.ForeignKey('Person')
     visit_start_date = models.DateTimeField()
     visit_end_date = models.DateTimeField()
     place_of_service_concept_id = models.IntegerField()
-    care_site_id = models.IntegerField(null=True, blank=True)
+    care_site_id = models.BigIntegerField(null=True, blank=True)
     place_of_service_source_value = models.CharField(max_length=50, blank=True)
     class Meta:
         db_table = 'visit_occurrence'
 
 class VisitCondition(models.Model):
-    condition_occurrence_id = models.IntegerField(primary_key=True)
-    person_id = models.IntegerField()
+    condition_occurrence_id = models.BigIntegerField(primary_key=True)
+    person_id = models.BigIntegerField()
     condition_concept = models.ForeignKey('VisitConditionConcept')
     condition_start_date = models.DateTimeField()
     condition_end_date = models.DateTimeField(null=True, blank=True)
     condition_type_concept = models.ForeignKey('VisitConditionType')
     stop_reason = models.CharField(max_length=20, blank=True)
-    associated_provider_id = models.IntegerField(null=True, blank=True)
+    associated_provider_id = models.BigIntegerField(null=True, blank=True)
     visit_occurrence = models.ForeignKey('Visit', null=True, blank=True)
     condition_source_value = models.CharField(max_length=50, blank=True)
     class Meta:
@@ -190,12 +190,12 @@ class VisitConditionType(models.Model):
         db_table = 'visit_condition_type'
 
 class VisitProcedure(models.Model):
-    procedure_occurrence_id = models.IntegerField(primary_key=True)
-    person_id = models.IntegerField()
+    procedure_occurrence_id = models.BigIntegerField(primary_key=True)
+    person_id = models.BigIntegerField()
     procedure_concept = models.ForeignKey('VisitProcedureConcept')
     procedure_date = models.DateTimeField()
     procedure_type_concept = models.ForeignKey('VisitProcedureType')
-    associated_provider_id = models.IntegerField(null=True, blank=True)
+    associated_provider_id = models.BigIntegerField(null=True, blank=True)
     visit_occurrence = models.ForeignKey('Visit', null=True, blank=True)
     relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
     procedure_source_value = models.CharField(max_length=50, blank=True)
@@ -229,8 +229,8 @@ class VisitProcedureType(models.Model):
         db_table = 'visit_procedure_type'
 
 class VisitDrug(models.Model):
-    drug_exposure_id = models.IntegerField(primary_key=True)
-    person_id = models.IntegerField()
+    drug_exposure_id = models.BigIntegerField(primary_key=True)
+    person_id = models.BigIntegerField()
     drug_concept = models.ForeignKey('VisitDrugConcept')
     drug_exposure_start_date = models.DateTimeField()
     drug_exposure_end_date = models.DateTimeField(null=True, blank=True)
@@ -240,7 +240,7 @@ class VisitDrug(models.Model):
     quantity = models.DecimalField(null=True, max_digits=4, decimal_places=0, blank=True)
     days_supply = models.DecimalField(null=True, max_digits=4, decimal_places=0, blank=True)
     sig = models.CharField(max_length=500, blank=True)
-    prescribing_provider_id = models.IntegerField(null=True, blank=True)
+    prescribing_provider_id = models.BigIntegerField(null=True, blank=True)
     visit_occurrence = models.ForeignKey('Visit', null=True, blank=True)
     relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
     drug_source_value = models.CharField(max_length=50, blank=True)
@@ -272,6 +272,140 @@ class VisitDrugType(models.Model):
     invalid_reason = models.CharField(max_length=1, blank=True)
     class Meta:
         db_table = 'visit_drug_type'
+
+class VisitObservation(models.Model):
+    observation_id = models.BigIntegerField(primary_key=True)
+    person_id = models.BigIntegerField()
+    observation_concept = models.ForeignKey('VisitObservationConcept')
+    observation_date = models.DateField()
+    observation_time = models.TimeField(null=True, blank=True)
+    value_as_number = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
+    value_as_string = models.CharField(max_length=60, blank=True)
+    value_as_concept_id = models.IntegerField(null=True, blank=True)
+    unit_concept_id = models.IntegerField(null=True, blank=True)
+    range_low = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
+    range_high = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
+    observation_type_concept = models.ForeignKey('VisitObservationType')
+    associated_provider_id = models.BigIntegerField()
+    visit_occurrence = models.ForeignKey('Visit', null=True, blank=True)
+    relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
+    observation_source_value = models.CharField(max_length=50, blank=True)
+    units_source_value = models.CharField(max_length=50, blank=True)
+    class Meta:
+        db_table = 'visit_observation'
+
+class VisitObservationConcept(models.Model):
+    concept_id = models.IntegerField(primary_key=True)
+    concept_name = models.CharField(max_length=256)
+    concept_level = models.IntegerField()
+    concept_class = models.CharField(max_length=60)
+    vocabulary_id = models.IntegerField()
+    concept_code = models.CharField(max_length=40)
+    valid_start_date = models.DateTimeField()
+    valid_end_date = models.DateTimeField()
+    invalid_reason = models.CharField(max_length=1, blank=True)
+    class Meta:
+        db_table = 'visit_observation_concept'
+
+class VisitObservationType(models.Model):
+    concept_id = models.IntegerField(primary_key=True)
+    concept_name = models.CharField(max_length=256)
+    concept_level = models.IntegerField()
+    concept_class = models.CharField(max_length=60)
+    vocabulary_id = models.IntegerField()
+    concept_code = models.CharField(max_length=40)
+    valid_start_date = models.DateTimeField()
+    valid_end_date = models.DateTimeField()
+    invalid_reason = models.CharField(max_length=1, blank=True)
+    class Meta:
+        db_table = 'visit_observation_type'
+
+class PersonCondition(models.Model):
+    condition_occurrence_id = models.BigIntegerField(primary_key=True)
+    person = models.ForeignKey('Person')
+    condition_concept = models.ForeignKey('PersonConditionConcept')
+    condition_start_date = models.DateTimeField()
+    condition_end_date = models.DateTimeField(null=True, blank=True)
+    condition_type_concept = models.ForeignKey('PersonConditionType')
+    stop_reason = models.CharField(max_length=20, blank=True)
+    associated_provider_id = models.BigIntegerField(null=True, blank=True)
+    visit_occurrence_id = models.BigIntegerField(null=True, blank=True)
+    condition_source_value = models.CharField(max_length=50, blank=True)
+    class Meta:
+        db_table = 'person_condition'
+
+class PersonConditionConcept(models.Model):
+    concept_id = models.IntegerField(primary_key=True)
+    concept_name = models.CharField(max_length=256)
+    concept_level = models.IntegerField()
+    concept_class = models.CharField(max_length=60)
+    vocabulary_id = models.IntegerField()
+    concept_code = models.CharField(max_length=40)
+    valid_start_date = models.DateTimeField()
+    valid_end_date = models.DateTimeField()
+    invalid_reason = models.CharField(max_length=1, blank=True)
+    class Meta:
+        db_table = 'person_condition_concept'
+
+class PersonConditionType(models.Model):
+    concept_id = models.IntegerField(primary_key=True)
+    concept_name = models.CharField(max_length=256)
+    concept_level = models.IntegerField()
+    concept_class = models.CharField(max_length=60)
+    vocabulary_id = models.IntegerField()
+    concept_code = models.CharField(max_length=40)
+    valid_start_date = models.DateTimeField()
+    valid_end_date = models.DateTimeField()
+    invalid_reason = models.CharField(max_length=1, blank=True)
+    class Meta:
+        db_table = 'person_condition_type'
+
+class PersonObservation(models.Model):
+    observation_id = models.BigIntegerField(primary_key=True)
+    person = models.ForeignKey('Person')
+    observation_concept = models.ForeignKey('PersonObservationConcept')
+    observation_date = models.DateField()
+    observation_time = models.TimeField(null=True, blank=True)
+    value_as_number = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
+    value_as_string = models.CharField(max_length=60, blank=True)
+    value_as_concept_id = models.IntegerField(null=True, blank=True)
+    unit_concept_id = models.IntegerField(null=True, blank=True)
+    range_low = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
+    range_high = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
+    observation_type_concept = models.ForeignKey('PersonObservationType')
+    associated_provider_id = models.BigIntegerField()
+    visit_occurrence_id = models.BigIntegerField(null=True, blank=True)
+    relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
+    observation_source_value = models.CharField(max_length=50, blank=True)
+    units_source_value = models.CharField(max_length=50, blank=True)
+    class Meta:
+        db_table = 'person_observation'
+
+class PersonObservationConcept(models.Model):
+    concept_id = models.IntegerField(primary_key=True)
+    concept_name = models.CharField(max_length=256)
+    concept_level = models.IntegerField()
+    concept_class = models.CharField(max_length=60)
+    vocabulary_id = models.IntegerField()
+    concept_code = models.CharField(max_length=40)
+    valid_start_date = models.DateTimeField()
+    valid_end_date = models.DateTimeField()
+    invalid_reason = models.CharField(max_length=1, blank=True)
+    class Meta:
+        db_table = 'person_observation_concept'
+
+class PersonObservationType(models.Model):
+    concept_id = models.IntegerField(primary_key=True)
+    concept_name = models.CharField(max_length=256)
+    concept_level = models.IntegerField()
+    concept_class = models.CharField(max_length=60)
+    vocabulary_id = models.IntegerField()
+    concept_code = models.CharField(max_length=40)
+    valid_start_date = models.DateTimeField()
+    valid_end_date = models.DateTimeField()
+    invalid_reason = models.CharField(max_length=1, blank=True)
+    class Meta:
+        db_table = 'person_observation_type'
 
 #class Observation(models.Model):
 #    observation_id = models.IntegerField(primary_key=True)
