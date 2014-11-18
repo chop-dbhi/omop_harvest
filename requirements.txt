@@ -9,7 +9,7 @@ psycopg2==2.5.1
 
 # Harvest components
 avocado>=2.3.0,<2.4.0
-serrano>=2.3.0,<2.3.3
+serrano>=2.3.0,<2.4.0
 modeltree>=1.1.7,<1.2
 
 # Harvest extensions
