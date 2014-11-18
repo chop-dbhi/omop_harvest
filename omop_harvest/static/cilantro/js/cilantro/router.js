@@ -1,2 +1,295 @@
-define(["backbone","underscore","loglevel"],function(t,e,i){var n=t.Router.extend({options:{main:"body",root:null},initialize:function(t){this.options=e.extend({},e.result(this,"options"),t),this._loaded=[],this._routes={},this._handlers={},this._registered={},e.bindAll(this,"_unloadAll","_loadAll","_unload","_load","_render")},_unloadAll:function(){var t=[].slice.call(arguments);e.each(this._loaded.slice(),function(e){this._unload.apply(this,[this._registered[e],!1].concat(t))},this)},_loadAll:function(t){var i=this._routes[t];if(i){var n=[].slice.call(arguments,1);e.each(i,function(t){this._load.apply(this,[this._registered[t]].concat(n))},this)}},_unload:function(e,i){void 0===i&&(i=!0);var n=this._loaded.indexOf(e.id);if((e.route||i&&n>=0)&&(this._loaded.splice(n,1),e._view)){e._view.$el.hide();var s=[].slice.call(arguments,2);e._view.trigger.apply(e._view,["router:unload",this,t.history.fragment].concat(s))}},_load:function(t){var n=[].slice.call(arguments,1);if(!t._view){if(e.isString(t.view)){var s=this;return require([t.view],function(e){t._view=new e(t.options),s._render.apply(s,[t].concat(n)),s._loaded.push(t.id)},function(t){i.error(t)}),void 0}t._view=t.view}this._render.apply(this,[t].concat(n)),this._loaded.push(t.id)},_render:function(e){var i=[].slice.call(arguments,1),n=e._view;if(!n._rendered&&(n._rendered=!0,e.el!==!1)){var s;s=e.el?t.$(e.el,this.options.main):t.$(this.options.main),s.append(n.el),n.render()}n.$el.show(),n.trigger.apply(n,["router:load",this,t.history.fragment].concat(i))},_register:function(t){if(this._registered[t.id])throw new Error('Route "'+t.id+'" already registered');if(t=e.clone(t),t.route){if(!this._handlers[t.route]){this._routes[t.route]=[];var i=e.bind(function(){var e=[].slice.call(arguments);this._unloadAll.apply(this,e),this._loadAll.apply(this,[t.route].concat(e))},this);this._handlers[t.route]=i,this.route(t.route,t.id,i)}}else this._load(t);t.route&&this._routes[t.route].push(t.id),this._registered[t.id]=t},get:function(t){return this._registered[t]},isNavigable:function(t){var e=this.get(t);return e&&e.navigable!==!1},isCurrent:function(i){if(i===t.history.fragment)return!0;var n=this._routes[t.history.fragment]||[];return e.any(n,function(t){return i===t})},hasRoute:function(t){return this._routes.hasOwnProperty(t)},navigate:function(e,i){return this.isNavigable(e)&&(e=this.get(e).route),t.Router.prototype.navigate.call(this,e,i)},register:function(t){t&&(e.isArray(t)||(t=[t]),e.each(t,function(t){t.view&&this._register(t)},this))},unregister:function(t){if(void 0===t)return e.each(this._registered,function(t,e){this.unregister(e)},this),void 0;var i=this._registered[t];if(!i)throw new Error('No route registered by id "'+t+'"');this._unload(i),delete this._registered[t];var n=this._routes[i.route];n&&n.indexOf(t)>=0&&this._routes[i.route].splice(n.indexOf(t),1)},start:function(i){if(!t.History.started){var n=this.options.root||"/";return"/"!==n.charAt(n.length-1)&&(n+="/"),i=e.extend({root:n,pushState:!0},i),t.history.start(i)}}});return{Router:n}});
-//@ sourceMappingURL=router.js.map
+/* global define, require */
+
+/*
+Router requirements:
+- Shared "main" area
+    - Workflows (pages) are hidden rather than closed
+
+
+var router = new Backbone.Router({
+
+    // Standard routes map
+    routes: {
+        'workspace/': 'workspace',
+        'query/': 'query',
+        'results/:query_id/': 'query',
+        'results/': 'results'
+    },
+
+    // Map handler name to the route name which enables registering
+    // multiple handlers per route.
+    handlers: {
+        'workspace': 'workspace',
+        'query': 'query',
+        'loadQuery': 'query',
+        'results': 'results'
+    }
+});
+
+// Dispatch to all handlers that are listening
+router.on('route:workspace', function() {
+
+});
+
+*/
+
+
+define([
+    'backbone',
+    'underscore',
+    'loglevel'
+], function(Backbone, _, loglevel) {
+
+
+    // Multi-handler router that
+    var Router = Backbone.Router.extend({
+        options: {
+            main: 'body',
+            root: null
+        },
+
+        initialize: function(options) {
+            this.options = _.extend({}, _.result(this, 'options'), options);
+
+            // Array of named views that are currently loaded based on the
+            // current route. TODO not needed?
+            this._loaded = [];
+
+            // Map of paths to an array of named views registered for that path
+            this._routes = {};
+
+            // Map of internal handlers per path that handles unloading the previous
+            // routes and loading the ones that match the path
+            this._handlers = {};
+
+            // Map of registered views by name/id
+            this._registered = {};
+
+            _.bindAll(this, '_unloadAll', '_loadAll', '_unload', '_load', '_render');
+        },
+
+        // Unload all views that are currently loaded
+        _unloadAll: function() {
+            var args = [].slice.call(arguments);
+
+            _.each(this._loaded.slice(), function(id) {
+                this._unload.apply(this, [this._registered[id], false].concat(args));
+            }, this);
+        },
+
+        // Load all views registered the route
+        _loadAll: function(route) {
+            var ids = this._routes[route];
+            if (!ids) return;
+
+            var args = [].slice.call(arguments, 1);
+
+            _.each(ids, function(id) {
+                this._load.apply(this, [this._registered[id]].concat(args));
+            }, this);
+        },
+
+        _unload: function(route, force) {
+            if (force === undefined) force = true;
+
+            var index = this._loaded.indexOf(route.id);
+
+            if (route.route || (force && index >= 0)) {
+                this._loaded.splice(index, 1);
+
+                if (route._view) {
+                    route._view.$el.hide();
+
+                    var args = [].slice.call(arguments, 2);
+
+                    route._view.trigger.apply(route._view, [
+                        'router:unload',
+                        this,
+                        Backbone.history.fragment
+                    ].concat(args));
+                }
+            }
+        },
+
+        _load: function(options) {
+            var args = [].slice.call(arguments, 1);
+
+            // If the view has not be loaded before, check if it's a
+            // module string and load asynchronously
+            if (!options._view) {
+                if (_.isString(options.view)) {
+                    var _this = this;
+
+                    require([options.view], function(View) {
+                        options._view = new View(options.options);
+                        _this._render.apply(_this, [options].concat(args));
+                        _this._loaded.push(options.id);
+                    }, function(err) {
+                        loglevel.error(err);
+                    });
+                    return;
+                }
+
+                options._view = options.view;
+            }
+
+            this._render.apply(this, [options].concat(args));
+            this._loaded.push(options.id);
+        },
+
+        _render: function(options) {
+            var args = [].slice.call(arguments, 1);
+
+            var view = options._view;
+
+            if (!view._rendered) {
+                view._rendered = true;
+
+                if (options.el !== false) {
+                    var target;
+
+                    if (options.el) {
+                        target = Backbone.$(options.el, this.options.main);
+                    }
+                    else {
+                        target = Backbone.$(this.options.main);
+                    }
+
+                    target.append(view.el);
+                    view.render();
+                }
+            }
+
+            view.$el.show();
+            view.trigger.apply(view, [
+                'router:load',
+                this,
+                Backbone.history.fragment
+            ].concat(args));
+        },
+
+        _register: function(options) {
+            if (this._registered[options.id]) {
+                throw new Error('Route "' + options.id + '" already registered');
+            }
+
+            // Clone since the options options will be augmented
+            options = _.clone(options);
+
+            // Non-routable view.. immediately load and only once
+            if (!options.route) {
+                this._load(options);
+            }
+            else if (!this._handlers[options.route]) {
+                this._routes[options.route] = [];
+
+                var handler = _.bind(function() {
+                    var args = [].slice.call(arguments);
+                    this._unloadAll.apply(this, args);
+                    this._loadAll.apply(this, [options.route].concat(args));
+                }, this);
+
+                this._handlers[options.route] = handler;
+                this.route(options.route, options.id, handler);
+            }
+
+            if (options.route) this._routes[options.route].push(options.id);
+
+            this._registered[options.id] = options;
+        },
+
+        // Returns a route config by id
+        get: function(id) {
+            return this._registered[id];
+        },
+
+        // Returns true if the route config is registered with this router and
+        // is navigable.
+        isNavigable: function(id) {
+            var config = this.get(id);
+            return config && config.navigable !== false;
+        },
+
+        // Checks if the current fragment or id is currently routed
+        isCurrent: function(fragment) {
+            if (fragment === Backbone.history.fragment) return true;
+
+            var ids = this._routes[Backbone.history.fragment] || [];
+
+            return _.any(ids, function(id) {
+                return fragment === id;
+            });
+        },
+
+        // Returns true if the supplied route is in the list of routes known
+        // to this router and false if it isn't known to this router.
+        hasRoute: function(route) {
+            return this._routes.hasOwnProperty(route);
+        },
+
+        // Attempt to get the corresponding config if one exists and use
+        // the route specified on the config. This provides a means of
+        // aliasing a name/key to a particular route.
+        navigate: function(fragment, options) {
+            if (this.isNavigable(fragment)) {
+                fragment = this.get(fragment).route;
+            }
+
+            return Backbone.Router.prototype.navigate.call(this, fragment, options);
+        },
+
+        // Register one or more routes
+        register: function(routes) {
+            if (!routes) return;
+            if (!_.isArray(routes)) routes = [routes];
+
+            _.each(routes, function(options) {
+                if (options.view) this._register(options);
+            }, this);
+        },
+
+        // Unregister a route by id or all registered routes
+        unregister: function(id) {
+            if (id === undefined) {
+                _.each(this._registered, function(value, id) {
+                    this.unregister(id);
+                }, this);
+
+                return;
+            }
+
+            var options = this._registered[id];
+
+            if (!options) throw new Error('No route registered by id "' + id + '"');
+
+            this._unload(options);
+            delete this._registered[id];
+
+            var routes = this._routes[options.route];
+
+            if (routes && routes.indexOf(id) >= 0) {
+                this._routes[options.route].splice(routes.indexOf(id), 1);
+            }
+        },
+
+        // Shortcut for starting the Backbone.history
+        start: function(options) {
+            if (Backbone.History.started) return;
+
+            var root = this.options.root || '/';
+
+            if (root.charAt(root.length - 1) !== '/') root = root + '/';
+
+            options = _.extend({root: root, pushState: true}, options);
+
+            return Backbone.history.start(options);
+        }
+    });
+
+
+    return {
+        Router: Router
+    };
+
+
+});

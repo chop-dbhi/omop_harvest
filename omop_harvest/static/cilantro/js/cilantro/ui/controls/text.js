@@ -1,2 +1,715 @@
-define(["underscore","backbone","marionette","../../core","../search","../base","./base"],function(e,t,i,n,s,o,r){var a={a:!0,about:!0,above:!0,across:!0,after:!0,afterwards:!0,again:!0,against:!0,all:!0,almost:!0,alone:!0,along:!0,already:!0,also:!0,although:!0,always:!0,am:!0,among:!0,amongst:!0,amoungst:!0,amount:!0,an:!0,and:!0,another:!0,any:!0,anyhow:!0,anyone:!0,anything:!0,anyway:!0,anywhere:!0,are:!0,around:!0,as:!0,at:!0,back:!0,be:!0,became:!0,because:!0,become:!0,becomes:!0,becoming:!0,been:!0,before:!0,beforehand:!0,behind:!0,being:!0,below:!0,beside:!0,besides:!0,between:!0,beyond:!0,bill:!0,both:!0,bottom:!0,but:!0,by:!0,call:!0,can:!0,cannot:!0,cant:!0,co:!0,con:!0,could:!0,couldnt:!0,cry:!0,de:!0,describe:!0,detail:!0,"do":!0,does:!0,done:!0,down:!0,due:!0,during:!0,each:!0,eg:!0,eight:!0,either:!0,eleven:!0,"else":!0,elsewhere:!0,empty:!0,enough:!0,etc:!0,even:!0,ever:!0,every:!0,everyone:!0,everything:!0,everywhere:!0,except:!0,few:!0,fifteen:!0,fify:!0,fill:!0,find:!0,fire:!0,first:!0,five:!0,"for":!0,former:!0,formerly:!0,forty:!0,found:!0,four:!0,from:!0,front:!0,full:!0,further:!0,get:!0,give:!0,go:!0,had:!0,has:!0,hasnt:!0,have:!0,he:!0,hence:!0,her:!0,here:!0,hereafter:!0,hereby:!0,herein:!0,hereupon:!0,hers:!0,herself:!0,him:!0,himself:!0,his:!0,how:!0,however:!0,hundred:!0,ie:!0,"if":!0,"in":!0,inc:!0,indeed:!0,interest:!0,into:!0,is:!0,it:!0,its:!0,itself:!0,keep:!0,last:!0,latter:!0,latterly:!0,least:!0,less:!0,ltd:!0,made:!0,many:!0,may:!0,me:!0,meanwhile:!0,might:!0,mill:!0,mine:!0,more:!0,moreover:!0,most:!0,mostly:!0,move:!0,much:!0,must:!0,my:!0,myself:!0,name:!0,namely:!0,neither:!0,never:!0,nevertheless:!0,next:!0,nine:!0,no:!0,nobody:!0,none:!0,noone:!0,nor:!0,not:!0,nothing:!0,now:!0,nowhere:!0,of:!0,off:!0,often:!0,on:!0,once:!0,one:!0,only:!0,onto:!0,or:!0,other:!0,others:!0,otherwise:!0,our:!0,ours:!0,ourselves:!0,out:!0,over:!0,own:!0,part:!0,per:!0,perhaps:!0,please:!0,put:!0,rather:!0,re:!0,same:!0,see:!0,seem:!0,seemed:!0,seeming:!0,seems:!0,serious:!0,several:!0,she:!0,should:!0,show:!0,side:!0,since:!0,sincere:!0,six:!0,sixty:!0,so:!0,some:!0,somehow:!0,someone:!0,something:!0,sometime:!0,sometimes:!0,somewhere:!0,still:!0,such:!0,system:!0,take:!0,ten:!0,than:!0,that:!0,the:!0,their:!0,them:!0,themselves:!0,then:!0,thence:!0,there:!0,thereafter:!0,thereby:!0,therefore:!0,therein:!0,thereupon:!0,these:!0,they:!0,thickv:!0,thin:!0,third:!0,"this":!0,those:!0,though:!0,three:!0,through:!0,throughout:!0,thru:!0,thus:!0,to:!0,together:!0,too:!0,top:!0,toward:!0,towards:!0,twelve:!0,twenty:!0,two:!0,un:!0,under:!0,until:!0,up:!0,upon:!0,us:!0,very:!0,via:!0,was:!0,way:!0,we:!0,well:!0,were:!0,what:!0,whatever:!0,when:!0,whence:!0,whenever:!0,where:!0,whereafter:!0,whereas:!0,whereby:!0,wherein:!0,whereupon:!0,wherever:!0,whether:!0,which:!0,"while":!0,whither:!0,who:!0,whoever:!0,whole:!0,whom:!0,whose:!0,why:!0,will:!0,"with":!0,within:!0,without:!0,would:!0,yet:!0,you:!0,your:!0,yours:!0,yourself:!0,yourselves:!0,didnt:!0,doesnt:!0,dont:!0,isnt:!0,wasnt:!0,youre:!0,hes:!0,ive:!0,theyll:!0,whos:!0,wheres:!0,whens:!0,whys:!0,hows:!0,whats:!0,shes:!0,im:!0,thats:!0},l=function(e){for(var t,i=[],n=0;n<e.length;n++)t=e[n],(/^[+-]?["']/.test(t)||(t=t.toLowerCase().replace(/[^a-zA-Z]/,""),!a[t]))&&i.push(e[n]);return i},c=/[+-]?(?:[^\s"']+|"([^"]*)"|'([^']*)')/g,h=function(e){var t=e.match(c)||[];return t.length&&(t=l(t)),t},u=function(e){return e.replace(/^[\-\+]?["']?/,"").replace(/["']?$/,"")},d=1,p=3,f=13,g=function(e,t,i){if(e.nodeType===p){var n=e.data.search(t);if(n>=0&&e.data.length>0){var s=e.data.match(t),o=document.createElement("span"),r=e.splitText(n);return r.splitText(s[0].length),o.appendChild(r.cloneNode(!0)),o.className=i,r.parentNode.replaceChild(o,r),!0}}else if(e.nodeType===d&&e.childNodes&&!/(script|style)/i.test(e.tagName))for(var a=0;a<e.childNodes.length;)g(e.childNodes[a],t,i)&&a++,a++},m=function(t,i,n){e.isRegExp(i)||(i=new RegExp(i,"ig")),t.each(function(){return g(this,i,n)})},v=i.ItemView.extend({tagName:"p",template:"controls/text/preview-item"}),w=i.CompositeView.extend({template:"controls/text/preview-list",itemView:v,itemViewContainer:".items",onRender:function(){var t=e.map(h(this.options.query),function(e){return u(e)}),i=this.$(this.itemViewContainer).children();m(i,t.join("|"),"highlight")}}),y=t.Collection.extend({parse:function(e){return e.objects||e.values}}),b=r.ControlLayout.extend({template:"controls/text/layout",options:{preview:!1},regions:{search:"[data-target=search-region]",preview:"[data-target=preview-region]"},regionViews:{search:s.Search,preview:w},collectionEvents:{request:"showPreviewLoading",error:"showPreviewError",sync:"showPreview"},events:{"keyup [data-target=search-region] input":"triggerPreview"},constructor:function(e){e.collection=new y,e.collection.url=function(){return e.model.links.values},r.ControlLayout.prototype.constructor.call(this,e)},onRender:function(){var e=new this.regionViews.search;this.listenTo(e,"search",this.change),this.search.show(e)},triggerPreview:function(e){if(this.options.preview&&e&&e.which===f){e.preventDefault(),e.stopPropagation(),this.showPreviewLoading();var t=this.get(),i=this.previewQuery=t.query;this.context?this.context.set({json:t}):this.context=n.data.contexts.add({json:t});var s=this;this.context.save().fail(function(){s.showPreviewError()}).done(function(){s.previewQuery===i&&s.collection.fetch({reset:!0,data:{aware:1,limit:5,context:s.context.id}})})}},showPreviewLoading:function(){this.preview.show(new o.LoadView({message:"Loading preview..."}))},showPreviewError:function(){this.preview.show(new o.ErrorView({message:"There was an error loading the preview."}))},showPreview:function(){var e=new this.regionViews.preview({query:this.previewQuery,collection:this.collection});this.preview.show(e)},validate:function(e){return e.children||e.value?void 0:"At least one keyword must be entered"},get:function(){var t=this.search.currentView.ui.input.val(),i=h(t);if(i.length){var n=this.model.id,s={field:n,type:"and",children:[]},o=[],r=[],a=[];return e.each(i,function(e){var t=e.charAt(0);"+"===t?o.push(u(e)):"-"===t?r.push(u(e)):a.push(u(e))}),1===o.length?s.children.push({field:n,operator:"icontains",value:o[0]}):o.length>1&&s.children.push({field:n,type:"and",children:e.map(o,function(e){return{field:n,operator:"icontains",value:e}})}),1===r.length?s.children.push({field:n,operator:"-icontains",value:r[0]}):r.length>1&&s.children.push({field:n,type:"and",children:e.map(r,function(e){return{field:n,operator:"-icontains",value:e}})}),1===a.length?s.children.push({field:n,operator:"icontains",value:a[0]}):a.length>1&&s.children.push({field:n,operator:"iregex",value:"("+a.join("|")+")"}),1===s.children.length&&(s=s.children[0]),s.query=t,s}},set:function(e){this._changing||e.query&&this.search.currentView.ui.input.val(e.query)}});return{TextControl:b}});
-//@ sourceMappingURL=text.js.map
+/* global define */
+
+define([
+    'underscore',
+    'backbone',
+    'marionette',
+    '../../core',
+    '../search',
+    '../base',
+    './base'
+], function(_, Backbone, Marionette, c, search, base, controls) {
+
+    // Stop words are considered too common in search strings and are removed
+    // to prevent false positive results. Stop words present in quote strings
+    // will be untouched.
+    var stopwords = {
+        'a': true,
+        'about': true,
+        'above': true,
+        'across': true,
+        'after': true,
+        'afterwards': true,
+        'again': true,
+        'against': true,
+        'all': true,
+        'almost': true,
+        'alone': true,
+        'along': true,
+        'already': true,
+        'also': true,
+        'although': true,
+        'always': true,
+        'am': true,
+        'among': true,
+        'amongst': true,
+        'amoungst': true,
+        'amount': true,
+        'an': true,
+        'and': true,
+        'another': true,
+        'any': true,
+        'anyhow': true,
+        'anyone': true,
+        'anything': true,
+        'anyway': true,
+        'anywhere': true,
+        'are': true,
+        'around': true,
+        'as': true,
+        'at': true,
+        'back': true,
+        'be': true,
+        'became': true,
+        'because': true,
+        'become': true,
+        'becomes': true,
+        'becoming': true,
+        'been': true,
+        'before': true,
+        'beforehand': true,
+        'behind': true,
+        'being': true,
+        'below': true,
+        'beside': true,
+        'besides': true,
+        'between': true,
+        'beyond': true,
+        'bill': true,
+        'both': true,
+        'bottom': true,
+        'but': true,
+        'by': true,
+        'call': true,
+        'can': true,
+        'cannot': true,
+        'cant': true,
+        'co': true,
+        'con': true,
+        'could': true,
+        'couldnt': true,
+        'cry': true,
+        'de': true,
+        'describe': true,
+        'detail': true,
+        'do': true,
+        'does': true,
+        'done': true,
+        'down': true,
+        'due': true,
+        'during': true,
+        'each': true,
+        'eg': true,
+        'eight': true,
+        'either': true,
+        'eleven': true,
+        'else': true,
+        'elsewhere': true,
+        'empty': true,
+        'enough': true,
+        'etc': true,
+        'even': true,
+        'ever': true,
+        'every': true,
+        'everyone': true,
+        'everything': true,
+        'everywhere': true,
+        'except': true,
+        'few': true,
+        'fifteen': true,
+        'fify': true,
+        'fill': true,
+        'find': true,
+        'fire': true,
+        'first': true,
+        'five': true,
+        'for': true,
+        'former': true,
+        'formerly': true,
+        'forty': true,
+        'found': true,
+        'four': true,
+        'from': true,
+        'front': true,
+        'full': true,
+        'further': true,
+        'get': true,
+        'give': true,
+        'go': true,
+        'had': true,
+        'has': true,
+        'hasnt': true,
+        'have': true,
+        'he': true,
+        'hence': true,
+        'her': true,
+        'here': true,
+        'hereafter': true,
+        'hereby': true,
+        'herein': true,
+        'hereupon': true,
+        'hers': true,
+        'herself': true,
+        'him': true,
+        'himself': true,
+        'his': true,
+        'how': true,
+        'however': true,
+        'hundred': true,
+        'ie': true,
+        'if': true,
+        'in': true,
+        'inc': true,
+        'indeed': true,
+        'interest': true,
+        'into': true,
+        'is': true,
+        'it': true,
+        'its': true,
+        'itself': true,
+        'keep': true,
+        'last': true,
+        'latter': true,
+        'latterly': true,
+        'least': true,
+        'less': true,
+        'ltd': true,
+        'made': true,
+        'many': true,
+        'may': true,
+        'me': true,
+        'meanwhile': true,
+        'might': true,
+        'mill': true,
+        'mine': true,
+        'more': true,
+        'moreover': true,
+        'most': true,
+        'mostly': true,
+        'move': true,
+        'much': true,
+        'must': true,
+        'my': true,
+        'myself': true,
+        'name': true,
+        'namely': true,
+        'neither': true,
+        'never': true,
+        'nevertheless': true,
+        'next': true,
+        'nine': true,
+        'no': true,
+        'nobody': true,
+        'none': true,
+        'noone': true,
+        'nor': true,
+        'not': true,
+        'nothing': true,
+        'now': true,
+        'nowhere': true,
+        'of': true,
+        'off': true,
+        'often': true,
+        'on': true,
+        'once': true,
+        'one': true,
+        'only': true,
+        'onto': true,
+        'or': true,
+        'other': true,
+        'others': true,
+        'otherwise': true,
+        'our': true,
+        'ours': true,
+        'ourselves': true,
+        'out': true,
+        'over': true,
+        'own': true,
+        'part': true,
+        'per': true,
+        'perhaps': true,
+        'please': true,
+        'put': true,
+        'rather': true,
+        're': true,
+        'same': true,
+        'see': true,
+        'seem': true,
+        'seemed': true,
+        'seeming': true,
+        'seems': true,
+        'serious': true,
+        'several': true,
+        'she': true,
+        'should': true,
+        'show': true,
+        'side': true,
+        'since': true,
+        'sincere': true,
+        'six': true,
+        'sixty': true,
+        'so': true,
+        'some': true,
+        'somehow': true,
+        'someone': true,
+        'something': true,
+        'sometime': true,
+        'sometimes': true,
+        'somewhere': true,
+        'still': true,
+        'such': true,
+        'system': true,
+        'take': true,
+        'ten': true,
+        'than': true,
+        'that': true,
+        'the': true,
+        'their': true,
+        'them': true,
+        'themselves': true,
+        'then': true,
+        'thence': true,
+        'there': true,
+        'thereafter': true,
+        'thereby': true,
+        'therefore': true,
+        'therein': true,
+        'thereupon': true,
+        'these': true,
+        'they': true,
+        'thickv': true,
+        'thin': true,
+        'third': true,
+        'this': true,
+        'those': true,
+        'though': true,
+        'three': true,
+        'through': true,
+        'throughout': true,
+        'thru': true,
+        'thus': true,
+        'to': true,
+        'together': true,
+        'too': true,
+        'top': true,
+        'toward': true,
+        'towards': true,
+        'twelve': true,
+        'twenty': true,
+        'two': true,
+        'un': true,
+        'under': true,
+        'until': true,
+        'up': true,
+        'upon': true,
+        'us': true,
+        'very': true,
+        'via': true,
+        'was': true,
+        'way': true,
+        'we': true,
+        'well': true,
+        'were': true,
+        'what': true,
+        'whatever': true,
+        'when': true,
+        'whence': true,
+        'whenever': true,
+        'where': true,
+        'whereafter': true,
+        'whereas': true,
+        'whereby': true,
+        'wherein': true,
+        'whereupon': true,
+        'wherever': true,
+        'whether': true,
+        'which': true,
+        'while': true,
+        'whither': true,
+        'who': true,
+        'whoever': true,
+        'whole': true,
+        'whom': true,
+        'whose': true,
+        'why': true,
+        'will': true,
+        'with': true,
+        'within': true,
+        'without': true,
+        'would': true,
+        'yet': true,
+        'you': true,
+        'your': true,
+        'yours': true,
+        'yourself': true,
+        'yourselves': true,
+        'didnt': true,
+        'doesnt': true,
+        'dont': true,
+        'isnt': true,
+        'wasnt': true,
+        'youre': true,
+        'hes': true,
+        'ive': true,
+        'theyll': true,
+        'whos': true,
+        'wheres': true,
+        'whens': true,
+        'whys': true,
+        'hows': true,
+        'whats': true,
+        'shes': true,
+        'im': true,
+        'thats': true
+    };
+
+    var removeStopWords = function(words) {
+        var keywords = [], word;
+
+        for (var i = 0; i < words.length; i++) {
+            word = words[i];
+
+            // Only filter non-literal strings
+            if (!/^[+-]?["']/.test(word)) {
+                word = word.toLowerCase().replace(/[^a-zA-Z]/, '');
+                if (stopwords[word]) continue;
+            }
+
+            keywords.push(words[i]);
+        }
+
+        return keywords;
+    };
+
+    // Parse string to include -/+ prefix and preserve quoted text
+    var searchRegex = /[+-]?(?:[^\s"']+|"([^"]*)"|'([^']*)')/g;
+
+    var parseString = function(text) {
+        var toks = text.match(searchRegex) || [];
+        if (toks.length) toks = removeStopWords(toks);
+        return toks;
+    };
+
+    var stripPrefixAndQuotes = function(text) {
+        return text.replace(/^[\-\+]?["']?/, '').replace(/["']?$/, '');
+    };
+
+    var ELEMENT_NODE = 1,
+        TEXT_NODE = 3,
+        ENTER_KEY = 13;
+
+    // Find text that matches `regexp` and inject span elements with the
+    // provided className. This enables wrapping text with a `highlight` class
+    // for example.
+    var innerHighlight = function(node, regexp, className) {
+        if (node.nodeType === TEXT_NODE) {
+            var pos = node.data.search(regexp);
+
+            if (pos >= 0 && node.data.length > 0) {
+                var match = node.data.match(regexp),
+                    span = document.createElement('span');
+
+                // Split the text node at the start position of the matched text.
+                var middle = node.splitText(pos);
+
+                // Split again leaving the middle text node to only contain the
+                // matched text.
+                middle.splitText(match[0].length);
+
+                // Insert the text node in the span
+                span.appendChild(middle.cloneNode(true));
+                span.className = className;
+
+                // Replace the middle text node with the span
+                middle.parentNode.replaceChild(span, middle);
+
+                // Successful creation of text node
+                return true;
+            }
+        }
+        // Recursive element nodes to find text nodes
+        else if (node.nodeType === ELEMENT_NODE && node.childNodes &&
+                   !/(script|style)/i.test(node.tagName)) {
+
+            var i = 0;
+
+            while (i < node.childNodes.length) {
+                // Successful hightlight, increment the counter to account for
+                // the newly created text node
+                if (innerHighlight(node.childNodes[i], regexp, className)) i++;
+                i++;
+            }
+        }
+    };
+
+    var highlightText = function(obj, pattern, className) {
+        if (!_.isRegExp(pattern)) {
+            pattern = new RegExp(pattern, 'ig');
+        }
+
+        obj.each(function() {
+            return innerHighlight(this, pattern, className);
+        });
+    };
+
+    var PreviewItem = Marionette.ItemView.extend({
+        tagName: 'p',
+
+        template: 'controls/text/preview-item'
+    });
+
+    var PreviewList = Marionette.CompositeView.extend({
+        template: 'controls/text/preview-list',
+
+        itemView: PreviewItem,
+
+        itemViewContainer: '.items',
+
+        onRender: function() {
+            var toks = _.map(parseString(this.options.query), function(tok) {
+                return stripPrefixAndQuotes(tok);
+            });
+
+            var children = this.$(this.itemViewContainer).children();
+            highlightText(children, toks.join('|'), 'highlight');
+        }
+    });
+
+    var PreviewCollection = Backbone.Collection.extend({
+        parse: function(resp) {
+            // Handle both variations..
+            return resp.objects || resp.values;
+        }
+    });
+
+
+    // Single text input that converts the input into a multiple-facted
+    // search. Operators are supported including:
+    //
+    // Prefixing a search term with "+" requires the term, while
+    // the "-" symbol requires the exclusion of the term.
+    //
+    // Strings can be quoted for exact matches. This is only necessary when
+    // a string has spaces or special characters.
+    var TextControl = controls.ControlLayout.extend({
+        template: 'controls/text/layout',
+
+        options: {
+            preview: false
+        },
+
+        regions: {
+            search: '[data-target=search-region]',
+            preview: '[data-target=preview-region]'
+        },
+
+        regionViews: {
+            search: search.Search,
+            preview: PreviewList
+        },
+
+        collectionEvents: {
+            request: 'showPreviewLoading',
+            error: 'showPreviewError',
+            sync: 'showPreview'
+        },
+
+        events: {
+            'keyup [data-target=search-region] input': 'triggerPreview'
+        },
+
+        constructor: function(options) {
+            options.collection = new PreviewCollection();
+            options.collection.url = function() {
+                return options.model.links.values;
+            };
+            controls.ControlLayout.prototype.constructor.call(this, options);
+        },
+
+        onRender: function() {
+            var searchView = new this.regionViews.search();
+            this.listenTo(searchView, 'search', this.change);
+            this.search.show(searchView);
+        },
+
+        triggerPreview: function(event) {
+            // Preview endpoint
+            if (!this.options.preview) return;
+
+            if (event && event.which === ENTER_KEY) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                this.showPreviewLoading();
+
+                // Reference on view and locally to compare once the response
+                // comes back to prevent late queries from rendering.
+                var data = this.get(),
+                    query = this.previewQuery = data.query;
+
+                // Create temporary context. This is needed due to the limitations of the
+                // Serrano API for getting a set of values relative to some context.
+                if (!this.context) {
+                    this.context = c.data.contexts.add({'json': data});
+                } else {
+                    this.context.set({'json': data});
+                }
+
+                var _this = this;
+
+                this.context.save()
+                    .fail(function() {
+                        _this.showPreviewError();
+                    })
+                    .done(function() {
+                        if (_this.previewQuery !== query) return;
+
+                        // Reset values using current filter as the context
+                        _this.collection.fetch({
+                            reset: true,
+                            data: {
+                                aware: 1,
+                                limit: 5,
+                                context: _this.context.id
+                            }
+                        });
+                    });
+            }
+        },
+
+        showPreviewLoading: function() {
+            this.preview.show(new base.LoadView({
+                message: 'Loading preview...'
+            }));
+        },
+
+        showPreviewError: function() {
+            this.preview.show(new base.ErrorView({
+                message: 'There was an error loading the preview.'
+            }));
+        },
+
+        showPreview: function() {
+            var previewRegion = new this.regionViews.preview({
+                query: this.previewQuery,
+                collection: this.collection
+            });
+
+            this.preview.show(previewRegion);
+        },
+
+        validate: function(attrs) {
+            if (!attrs.children && !attrs.value) {
+                return 'At least one keyword must be entered';
+            }
+        },
+
+        get: function() {
+            var query = this.search.currentView.ui.input.val();
+
+            var toks = parseString(query);
+
+            if (!toks.length) return;
+
+            var field = this.model.id;
+
+            var filter = {
+                field: field,
+                type: 'and',
+                children: []
+            };
+
+            var required = [],
+                excluded = [],
+                optional = [];
+
+            _.each(toks, function(tok) {
+                var prefix = tok.charAt(0);
+
+                if (prefix === '+') {
+                    required.push(stripPrefixAndQuotes(tok));
+                }
+                else if (prefix === '-') {
+                    excluded.push(stripPrefixAndQuotes(tok));
+                }
+                else {
+                    optional.push(stripPrefixAndQuotes(tok));
+                }
+            });
+
+            if (required.length === 1) {
+                filter.children.push({
+                    field: field,
+                    operator: 'icontains',
+                    value: required[0]
+                });
+            }
+            else if (required.length > 1) {
+                filter.children.push({
+                    field: field,
+                    type: 'and',
+                    children: _.map(required, function(value) {
+                        return {
+                            field: field,
+                            operator: 'icontains',
+                            value: value
+                        };
+                    })
+                });
+            }
+
+            if (excluded.length === 1) {
+                filter.children.push({
+                    field: field,
+                    operator: '-icontains',
+                    value: excluded[0]
+                });
+            }
+            else if (excluded.length > 1) {
+                filter.children.push({
+                    field: field,
+                    type: 'and',
+                    children: _.map(excluded, function(value) {
+                        return {
+                            field: field,
+                            operator: '-icontains',
+                            value: value
+                        };
+                    })
+                });
+            }
+
+            if (optional.length === 1) {
+                filter.children.push({
+                    field: field,
+                    operator: 'icontains',
+                    value: optional[0]
+                });
+            }
+            else if (optional.length > 1) {
+                filter.children.push({
+                    field: field,
+                    operator: 'iregex',
+                    value: '(' + optional.join('|') + ')'
+                });
+            }
+
+            // Remove single nested condition
+            if (filter.children.length === 1) {
+                filter = filter.children[0];
+            }
+
+            // The original query is preserved since reconstructing the original
+            // string from the parsed tokens above may be ambiguous. Further, the
+            // semantics of the tokenization may change resulting in a different
+            // query representation.
+            filter.query = query;
+
+            return filter;
+        },
+
+        set: function(attrs) {
+            if (this._changing) return;
+
+            if (attrs.query) {
+                this.search.currentView.ui.input.val(attrs.query);
+            }
+        }
+    });
+
+
+    return {
+        TextControl: TextControl
+    };
+
+});

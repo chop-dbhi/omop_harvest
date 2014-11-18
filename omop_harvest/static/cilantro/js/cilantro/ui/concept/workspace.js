@@ -1,2 +1,138 @@
-define(["underscore","marionette","loglevel","../core","../base","../welcome","../config","./form"],function(t,e,i,n,s,o,r,a){var l=s.ErrorView.extend({template:"concept/error"}),c=e.Layout.extend({className:"concept-workspace",template:"concept/workspace",itemView:a.ConceptForm,errorView:l,regions:{main:".main-region"},regionViews:{main:o.Welcome},initialize:function(){if(this.data={},!(this.data.concepts=this.options.concepts))throw new Error("concept collection required");if(!(this.data.context=this.options.context))throw new Error("context model required");this.listenTo(n,n.CONCEPT_FOCUS,this.showItem)},_ensureModel:function(t){return t instanceof n.models.Concept||(t=this.data.concepts.get(t)),t},showItem:function(e){var s=this._ensureModel(e);if(!s)return i.debug("unknown workspace concept: "+(e.id||e)),void 0;if(n.router.navigate("query",{trigger:!0}),!this.currentView.model||this.currentView.model.id!==s.id){var o={model:s,context:this.data.context},a=r.resolveFormOptions(s,"concepts");if(o=t.extend(o,a.options),a.module){var l=this;require([a.module],function(t){l.createView(t,o)},function(t){l.showErrorView(s),i.debug(t)})}else this.createView(a.view||this.itemView,o)}},createView:function(t,e){try{var i=new t(e);this.setView(i)}catch(s){if(this.showErrorView(e.model),n.config.get("debug"))throw s}},showErrorView:function(t){var e=new this.errorView({model:t});this.setView(e)},setView:function(t){this.currentView=t,this.main.show(t)},onRender:function(){var t=new this.regionViews.main({context:this.data.context});this.setView(t)}});return{ConceptWorkspace:c}});
-//@ sourceMappingURL=workspace.js.map
+/* global define, require */
+
+define([
+    'underscore',
+    'marionette',
+    'loglevel',
+    '../core',
+    '../base',
+    '../welcome',
+    '../config',
+    './form'
+], function(_, Marionette, loglevel, c, base, welcome, config, form) {
+
+    var ConceptError = base.ErrorView.extend({
+        template: 'concept/error'
+    });
+
+
+    // Some of the class properties here are mimicked after CollectionView
+    // since it is managing the concept form views
+    var ConceptWorkspace = Marionette.Layout.extend({
+        className: 'concept-workspace',
+
+        template: 'concept/workspace',
+
+        itemView: form.ConceptForm,
+
+        errorView: ConceptError,
+
+        regions: {
+            main: '.main-region'
+        },
+
+        regionViews: {
+            main: welcome.Welcome
+        },
+
+        initialize: function() {
+            this.data = {};
+
+            if (!(this.data.concepts = this.options.concepts)) {
+                throw new Error('concept collection required');
+            }
+
+            if (!(this.data.context = this.options.context)) {
+                throw new Error('context model required');
+            }
+
+            this.listenTo(c, c.CONCEPT_FOCUS, this.showItem);
+        },
+
+        _ensureModel: function(model) {
+            if (!(model instanceof c.models.Concept)) {
+                model = this.data.concepts.get(model);
+            }
+            return model;
+        },
+
+        showItem: function(id) {
+            var model = this._ensureModel(id);
+
+            // Unknown or private model
+            if (!model) {
+                loglevel.debug('unknown workspace concept: ' + (id.id || id));
+                return;
+            }
+
+            c.router.navigate('query', {trigger: true});
+
+            // Already being shown
+            if (this.currentView.model && this.currentView.model.id === model.id) return;
+
+            var options = {
+                model: model,
+                context: this.data.context
+            };
+
+            var result = config.resolveFormOptions(model, 'concepts');
+
+            // Extend options
+            options = _.extend(options, result.options);
+
+            // Load external module, catch error if it doesn't exist
+            if (result.module) {
+                var _this = this;
+
+                require([
+                    result.module
+                ], function(itemView) {
+                    _this.createView(itemView, options);
+                }, function(err) {
+                    _this.showErrorView(model);
+                    loglevel.debug(err);
+                });
+
+            }
+            else {
+                this.createView(result.view || this.itemView, options);
+            }
+        },
+
+        createView: function(itemViewClass, options) {
+            try {
+                var view = new itemViewClass(options);
+                this.setView(view);
+            }
+            catch (err) {
+                this.showErrorView(options.model);
+
+                // Rethrow error
+                if (c.config.get('debug')) throw(err);
+            }
+        },
+
+        showErrorView: function(model) {
+            var view = new this.errorView({
+                model: model
+            });
+            this.setView(view);
+        },
+
+        setView: function(view) {
+            this.currentView = view;
+            this.main.show(view);
+        },
+
+        onRender: function() {
+            var main = new this.regionViews.main({context: this.data.context});
+            this.setView(main);
+        }
+    });
+
+
+    return {
+        ConceptWorkspace: ConceptWorkspace
+    };
+
+});

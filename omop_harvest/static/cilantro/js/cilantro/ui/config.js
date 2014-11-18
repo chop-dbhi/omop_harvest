@@ -1,2 +1,73 @@
-define(["underscore","./core"],function(t,e){var i=function(i,n){var s,o,r=[{}],a=e.config.get(n+".instances."+i.id+".form");t.isFunction(a)?s=a:t.isString(a)?o=a:t.isObject(a)&&r.push(a);var l=e.config.get(n+".types."+i.get("type")+".form");!s&&t.isFunction(l)?s=l:!o&&t.isString(l)?o=l:r.push(l);var c=e.config.get(n+".defaults.form");return!s&&t.isFunction(c)?s=c:!o&&t.isString(c)?o=c:r.push(c),r=t.defaults.apply(null,r),{view:s,module:o,options:r}};return{resolveFormOptions:i}});
-//@ sourceMappingURL=config.js.map
+/* global define */
+
+define([
+    'underscore',
+    './core'
+], function(_, c) {
+
+    var resolveFormOptions = function(model, namespace) {
+        var viewClass, viewClassModule, viewOptions = [{}];
+
+        // Instance options
+        var instanceOptions = c.config.get(namespace + '.instances.' +
+                                           model.id + '.form');
+
+        // Constructor
+        if (_.isFunction(instanceOptions)) {
+            viewClass = instanceOptions;
+        }
+        // Module name for async fetching
+        else if (_.isString(instanceOptions)) {
+            viewClassModule = instanceOptions;
+        }
+        // Options for default view class
+        else if (_.isObject(instanceOptions)) {
+            viewOptions.push(instanceOptions);
+        }
+
+        // Type options
+        var typeOptions = c.config.get(namespace + '.types.' +
+                                       model.get('type') + '.form');
+
+        // Constructor
+        if (!viewClass && _.isFunction(typeOptions)) {
+            viewClass = typeOptions;
+        }
+        // Module name for async fetching
+        else if (!viewClassModule && _.isString(typeOptions)) {
+            viewClassModule = typeOptions;
+        }
+        else {
+            viewOptions.push(typeOptions);
+        }
+
+        // Default options
+        var defaultOptions = c.config.get(namespace + '.defaults.form');
+
+        // Constructor
+        if (!viewClass && _.isFunction(defaultOptions)) {
+            viewClass = defaultOptions;
+        }
+        // Module name for async fetching
+        else if (!viewClassModule && _.isString(defaultOptions)) {
+            viewClassModule = defaultOptions;
+        }
+        else {
+            viewOptions.push(defaultOptions);
+        }
+
+        // Compose options in order of precedence
+        viewOptions = _.defaults.apply(null, viewOptions);
+
+        return {
+            view: viewClass,
+            module: viewClassModule,
+            options: viewOptions
+        };
+    };
+
+    return {
+        resolveFormOptions: resolveFormOptions
+    };
+
+});

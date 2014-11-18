@@ -1,2 +1,113 @@
-define(["underscore","backbone","../core","./base","./field"],function(t,e,i,n,s){var o=n.Model.extend({constructor:function(){this.fields=new s.FieldCollection,n.Model.prototype.constructor.apply(this,arguments)},initialize:function(){n.Model.prototype.initialize.call(this,arguments),i.on(i.CONCEPT_FOCUS,function(t){this.id===t&&0===this.fields.length&&this.fields.fetch({reset:!0})},this)},parse:function(t,e){n.Model.prototype.parse.call(this,t,e);var i=this;return this.fields.url=function(){return i.links.fields},t?(t.fields&&(this.fields.set(t.fields,e),delete t.fields),t):void 0}}),r=n.Collection.extend({model:o,search:function(i,n){return e.ajax({url:t.result(this,"url"),data:{query:i,brief:1},dataType:"json",success:function(t){n(t)}})}}),a=r.extend({constructor:function(){this.queryable=new r,this.viewable=new r;var e=this;this.queryable.url=function(){return t.result(e,"url")},this.viewable.url=function(){return t.result(e,"url")},r.prototype.constructor.apply(this,arguments)},initialize:function(){this.on("add remove reset",function(){this.queryable.reset(this.filter(function(t){return!!t.get("queryable")||!!t.get("queryview")})),this.viewable.reset(this.filter(function(t){return!!t.get("viewable")||!!t.get("formatter_name")}))})}});return{Concept:o,Concepts:a}});
-//@ sourceMappingURL=concept.js.map
+/* global define */
+
+define([
+    'underscore',
+    'backbone',
+    '../core',
+    './base',
+    './field'
+], function(_, Backbone, c, base, field) {
+
+
+    var Concept = base.Model.extend({
+        constructor: function() {
+            this.fields = new field.FieldCollection();
+            base.Model.prototype.constructor.apply(this, arguments);
+        },
+
+        initialize: function() {
+            base.Model.prototype.initialize.call(this, arguments);
+
+            // Fetch the field data the first time a concept receives focus
+            c.on(c.CONCEPT_FOCUS, function(id) {
+                if (this.id !== id) return;
+
+                if (this.fields.length === 0) {
+                    this.fields.fetch({reset: true});
+                }
+            }, this);
+        },
+
+        parse: function(resp, options) {
+            base.Model.prototype.parse.call(this, resp, options);
+
+            var _this = this;
+
+            // Set the endpoint for related fields
+            this.fields.url = function() {
+                return _this.links.fields;
+            };
+
+            // Should only be falsy on a PUT request
+            if (!resp) return;
+
+            // Response has the fields data embedded
+            if (resp.fields) {
+                this.fields.set(resp.fields, options);
+                delete resp.fields;
+            }
+
+            return resp;
+        }
+    });
+
+
+    var BaseConcepts = base.Collection.extend({
+        model: Concept,
+
+        // Perform a remote search on this collection
+        search: function(query, handler) {
+            return Backbone.ajax({
+                url: _.result(this, 'url'),
+                data: {
+                    query: query,
+                    brief: 1
+                },
+                dataType: 'json',
+                success: function(resp) {
+                    handler(resp);
+                }
+            });
+        }
+    });
+
+
+    var Concepts = BaseConcepts.extend({
+        constructor: function() {
+            this.queryable = new BaseConcepts();
+            this.viewable = new BaseConcepts();
+
+            var _this = this;
+
+            this.queryable.url = function() {
+                return _.result(_this, 'url');
+            };
+
+            this.viewable.url = function() {
+                return _.result(_this, 'url');
+            };
+
+            BaseConcepts.prototype.constructor.apply(this, arguments);
+        },
+
+        initialize: function() {
+            // Update the sub-collections with the specific sets of models
+            this.on('add remove reset', function() {
+                this.queryable.reset(this.filter(function(model) {
+                    return !!model.get('queryable') || !!model.get('queryview');
+                }));
+
+                this.viewable.reset(this.filter(function(model) {
+                    return !!model.get('viewable') || !!model.get('formatter_name');
+                }));
+            });
+        }
+    });
+
+
+    return {
+        Concept: Concept,
+        Concepts: Concepts
+    };
+
+});

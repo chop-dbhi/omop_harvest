@@ -1,2 +1,14 @@
-define(["underscore","./workflows/query","./workflows/results","./workflows/workspace"],function(e){var t=[].slice.call(arguments,1);return e.extend.apply(null,[{}].concat(t))});
-//@ sourceMappingURL=workflows.js.map
+/* global define */
+
+define([
+    'underscore',
+    './workflows/query',
+    './workflows/results',
+    './workflows/workspace'
+], function(_) {
+
+    var mods = [].slice.call(arguments, 1);
+
+    return _.extend.apply(null, [{}].concat(mods));
+
+});

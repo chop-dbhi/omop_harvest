@@ -1,2 +1,33 @@
-define(["underscore","marionette","../base","./cell"],function(e,t,i,n){var s=t.CollectionView.extend({tagName:"tr",itemView:n.Cell,itemViewOptions:function(t){return e.extend({},this.options,{model:t})}}),o=i.LoadView.extend({align:"left",tagName:"tr"});return{EmptyRow:o,Row:s}});
-//@ sourceMappingURL=row.js.map
+/* global define */
+
+define([
+    'underscore',
+    'marionette',
+    '../base',
+    './cell'
+], function(_, Marionette, base, cell) {
+
+    var Row = Marionette.CollectionView.extend({
+        tagName: 'tr',
+
+        itemView: cell.Cell,
+
+        itemViewOptions: function(model) {
+            return _.extend({}, this.options, {
+                model: model
+            });
+        }
+    });
+
+    var EmptyRow = base.LoadView.extend({
+        align: 'left',
+
+        tagName: 'tr'
+    });
+
+    return {
+        EmptyRow: EmptyRow,
+        Row: Row
+    };
+
+});

@@ -1,0 +1,23 @@
+<% if (data.category) { %>
+    <p class=category>
+        <% if (data.category.parent) { %>
+            <a href='#' class=category-link><%= data.category.parent.name %></a>
+            <i class=icon-angle-right></i>
+        <% } %>
+        <a href='#' class=category-link><%= data.category.name %></a>
+    </p>
+<% } %>
+
+<p class=name>
+    <%= data.name %>
+    <% if (data.unit) { %>
+        <small class=unit><%= data.unit %></small>
+    <% } %>
+</p>
+
+<% if (data.description) { %>
+    <div class="description ellipsis">
+        <div class="text"><%= data.description %></div>
+        <a class=toggle href=#>read more</a>
+    </div>
+<% } %>

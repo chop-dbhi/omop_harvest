@@ -1,2 +1,48 @@
-define(["./base","../core","./context","./view"],function(t,e,i,n){var s=t.Model.extend({constructor:function(e,s){e=e||{},this.context=new i.Context({json:e.context_json}),this.view=new n.ViewModel({json:e.view_json}),t.Model.prototype.constructor.call(this,e,s)},parse:function(e,i){return e&&(e&&!e.shared_users&&(e.shared_users=[]),this.context.set({json:e.context_json}),this.view.set({json:e.view_json})),t.Model.prototype.parse.call(this,e,i)}}),o=t.Collection.extend({model:s});return{Query:s,Queries:o}});
-//@ sourceMappingURL=query.js.map
+/* global define */
+
+define([
+    './base',
+    '../core',
+    './context',
+    './view'
+], function(base, c, context, view) {
+
+
+    var Query = base.Model.extend({
+        constructor: function(attrs, options) {
+            attrs = attrs || {};
+
+            // Use this.model.context.attributes.json to retrive query filters as
+            // of this change.
+            this.context = new context.Context({json: attrs.context_json}); // jshint ignore:line
+            this.view = new view.ViewModel({json: attrs.view_json}); // jshint ignore:line
+
+            base.Model.prototype.constructor.call(this, attrs, options);
+        },
+
+        parse: function(attrs, options) {
+            if (attrs) {
+                if (attrs && !attrs.shared_users) {  // jshint ignore:line
+                    attrs.shared_users = [];  // jshint ignore:line
+                }
+
+                this.context.set({json: attrs.context_json}); // jshint ignore:line
+                this.view.set({json: attrs.view_json}); // jshint ignore:line
+            }
+
+            return base.Model.prototype.parse.call(this, attrs, options);
+        }
+    });
+
+
+    var Queries = base.Collection.extend({
+        model: Query
+    });
+
+
+    return {
+        Query: Query,
+        Queries: Queries
+    };
+
+});

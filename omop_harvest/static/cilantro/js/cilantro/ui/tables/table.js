@@ -1,2 +1,63 @@
-define(["jquery","underscore","marionette","./body","./header","./footer"],function(e,t,i,n,s,o){var r=i.CollectionView.extend({tagName:"table",className:"table table-striped",itemView:n.Body,itemViewOptions:function(e){return t.defaults({collection:e.series},this.options)},collectionEvents:{"change:currentpage":"showCurrentPage"},initialize:function(){this.header=new s.Header(t.defaults({collection:this.collection.indexes},this.options)),this.footer=new o.Footer(t.defaults({collection:this.collection.indexes},this.options)),this.header.render(),this.footer.render(),this.$el.append(this.header.el,this.footer.el),this.listenTo(this.collection,"reset",function(){0===this.collection.objectCount?this.$el.hide():this.$el.show()}),this.listenTo(this,"render",this.resize,this),t.bindAll(this,"resize"),e(window).resize(this.resize)},resize:function(){var t=this;e("tbody").each(function(){var i=e(this);if(i.height()>0){t.children.each(function(t){t.children.each(function(t){var i=e(document).width()/t.children.length;t.children.each(function(e){e.$el.css("width",i),e.$el.css("max-width",i)})})});var n=i.height()+parseInt(i.css("top").replace("px",""));e(document).width()>979?(e("#footer").offset({top:n}),i.css("position","absolute")):(e("#footer").css("position","static"),i.css("position","static"))}})},showCurrentPage:function(e,t){this.children.each(function(e){e.$el.toggle(e.model.id===t)})}});return{Table:r}});
-//@ sourceMappingURL=table.js.map
+/* global define */
+
+define([
+    'underscore',
+    'marionette',
+    './body',
+    './header',
+    './footer'
+], function(_, Marionette, body, header, footer) {
+
+    // Renders a table with the thead and tfoot elements and one or more
+    // tbody elements each representing a frame of data in the collection.
+    var Table = Marionette.CollectionView.extend({
+        tagName: 'table',
+
+        className: 'table table-striped',
+
+        itemView: body.Body,
+
+        itemViewOptions: function(item) {
+            return _.defaults({collection: item.series}, this.options);
+        },
+
+        collectionEvents: {
+            'change:currentpage': 'showCurrentPage'
+        },
+
+        initialize: function() {
+            this.header = new header.Header(_.defaults({
+                collection: this.collection.indexes
+            }, this.options));
+
+            this.footer = new footer.Footer(_.defaults({
+                collection: this.collection.indexes
+            }, this.options));
+
+            this.header.render();
+            this.footer.render();
+
+            this.$el.append(this.header.el, this.footer.el);
+
+            this.listenTo(this.collection, 'reset', function() {
+                if (this.collection.objectCount === 0) {
+                    this.$el.hide();
+                }
+                else {
+                    this.$el.show();
+                }
+            });
+        },
+
+        showCurrentPage: function(model, num) {
+            this.children.each(function(view) {
+                view.$el.toggle(view.model.id === num);
+            });
+        }
+    });
+
+    return {
+        Table: Table
+    };
+
+});

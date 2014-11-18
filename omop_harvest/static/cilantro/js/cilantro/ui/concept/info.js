@@ -1,2 +1,116 @@
-define(["jquery","underscore","marionette","../core"],function(t,e,i,n){var s=i.ItemView.extend({className:"concept-info",template:"concept/info",ui:{name:".name",category:".category",description:".description",descriptionText:".description .text",descriptionToggle:".description .toggle"},events:{"click .category-link":"onCategoryLinkClick","click @ui.descriptionToggle":"toggleDescription"},initialize:function(){e.bindAll(this,"renderDescriptionToggle"),0===this.model.fields.length&&this.listenToOnce(this.model.fields,"reset",function(){this.render()})},onCategoryLinkClick:function(e){var i=t(e.target);n.panels.concept.triggerSearch(i.text())},serializeData:function(){var t=this.model.toJSON();if(1===this.model.fields.length){var e=this.model.fields.at(0);t.description||(t.description=e.get("description")),t.unit||(t.unit=e.get("unit"))}return t},onRender:function(){e.defer(this.renderDescriptionToggle),t(window).on("resize",this.renderDescriptionToggle)},onClose:function(){t(window).off("resize",this.renderDescriptionToggle)},descriptionOverflows:function(){var t=this.ui.descriptionText.prop("scrollWidth"),e=this.ui.descriptionText.prop("offsetWidth");return t>e},renderDescriptionToggle:function(){var t=this.ui.description.hasClass("ellipsis");this.ui.description.addClass("ellipsis"),this.descriptionOverflows()?(this.ui.descriptionToggle.show(),this.ui.description.toggleClass("ellipsis",t)):(this.ui.descriptionToggle.hide(),this.ui.description.addClass("ellipsis"))},toggleDescription:function(){if(this.ui.description.hasClass("ellipsis")){if(!this.descriptionOverflows())return;this.ui.descriptionToggle.text("read less"),this.ui.description.removeClass("ellipsis")}else this.ui.descriptionToggle.text("read more"),this.ui.description.addClass("ellipsis")}});return{ConceptInfo:s}});
-//@ sourceMappingURL=info.js.map
+/* global define */
+
+define([
+    'jquery',
+    'underscore',
+    'marionette',
+    '../core'
+], function($, _, Marionette, c) {
+
+    var ConceptInfo = Marionette.ItemView.extend({
+        className: 'concept-info',
+
+        template: 'concept/info',
+
+        ui: {
+            name: '.name',
+            category: '.category',
+            description: '.description',
+            descriptionText: '.description .text',
+            descriptionToggle: '.description .toggle'
+        },
+
+        events: {
+            'click .category-link': 'onCategoryLinkClick',
+            'click @ui.descriptionToggle': 'toggleDescription'
+        },
+
+        initialize: function() {
+            // For window event handler
+            _.bindAll(this, 'renderDescriptionToggle');
+
+            // Assume fields have not been loaded yet. Re-render after fields
+            // have been loaded.
+            if (this.model.fields.length === 0) {
+                this.listenToOnce(this.model.fields, 'reset', function() {
+                    this.render();
+                });
+            }
+        },
+
+        onCategoryLinkClick: function(event) {
+            var target = $(event.target);
+            c.panels.concept.triggerSearch(target.text());
+        },
+
+        // If the concept does not have it's own description and contains only
+        // one field, use the field's description.
+        serializeData: function() {
+            var data = this.model.toJSON();
+
+            if (this.model.fields.length === 1) {
+                var field = this.model.fields.at(0);
+                if (!data.description) data.description = field.get('description');
+                if (!data.unit) data.unit = field.get('unit');
+            }
+
+            return data;
+        },
+
+        onRender: function() {
+            // Initial render
+            _.defer(this.renderDescriptionToggle);
+
+            // Hide toggle on resize
+            $(window).on('resize', this.renderDescriptionToggle);
+        },
+
+        onClose: function() {
+            $(window).off('resize', this.renderDescriptionToggle);
+        },
+
+        descriptionOverflows: function() {
+            var scrollWidth = this.ui.descriptionText.prop('scrollWidth'),
+                offsetWidth = this.ui.descriptionText.prop('offsetWidth');
+
+            // Contents exceeds a "single line"
+            return scrollWidth > offsetWidth;
+        },
+
+        renderDescriptionToggle: function() {
+            // Restore state of class after test
+            var hasClass = this.ui.description.hasClass('ellipsis');
+
+            // Temporarily add class for calculation
+            this.ui.description.addClass('ellipsis');
+
+            if (this.descriptionOverflows()) {
+                this.ui.descriptionToggle.show();
+                this.ui.description.toggleClass('ellipsis', hasClass);
+            }
+            else {
+                this.ui.descriptionToggle.hide();
+                // Add it for the next resize
+                this.ui.description.addClass('ellipsis');
+            }
+        },
+
+        toggleDescription: function() {
+            // Overflow hidden is enforced, toggle normally
+            if (this.ui.description.hasClass('ellipsis')) {
+                if (!this.descriptionOverflows()) return;
+                this.ui.descriptionToggle.text('read less');
+                this.ui.description.removeClass('ellipsis');
+            }
+            else {
+                this.ui.descriptionToggle.text('read more');
+                this.ui.description.addClass('ellipsis');
+            }
+        }
+    });
+
+    return {
+        ConceptInfo: ConceptInfo
+    };
+
+});

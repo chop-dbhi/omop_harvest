@@ -1,2 +1,263 @@
-define(["backbone","../core","../base","../accordion"],function(t,e,i,n){var s=n.AccordionItem.extend({events:{"click a":"click"},initialize:function(){this.listenTo(e,e.CONCEPT_FOCUS,this.toggleFocus)},click:function(t){t.preventDefault(),e.trigger(e.CONCEPT_FOCUS,this.model.id)},toggleFocus:function(t){this.$el.toggleClass("active",t===this.model.id)}}),o=n.AccordionSection.extend({itemView:s,filter:function(t,e){var i=!1;return this.children.each(function(n){!t||e[n.model.id]?(n.$el.show(),i=!0):n.$el.hide()}),this.$el.toggle(i),i}}),r=n.AccordionGroup.extend({itemView:o,filter:function(t,e){var i=!1;return this.children.each(function(n){n.filter(t,e)&&(i=!0)}),t?i?(this.$el.show(),this.expand()):this.$el.hide():(this.$el.show(),this.renderState()),i},find:function(t){var e,i,n;for(e in this.children._views)if(i=this.children._views[e],i.children&&(n=i.children.findByModel(t)))return n}}),a=n.Accordion.extend({className:"concept-index accordion",itemView:r,emptySearchView:i.EmptySearchView,showCollection:function(){this.resetGroups();var t=this;this.groups.each(function(e,i){t.addItemView(e,t.getItemView(e),i)})},getGroup:function(t){if(t.category){for(var e=t.category;e.parent;)e=e.parent;return e}return{id:-1,name:"Other"}},getSection:function(t){return t.category&&t.category.parent?t.category:{id:-1,name:"Other"}},resetGroups:function(){this.groups?this.groups.reset():this.groups=new t.Collection(null,{comparator:"order"});var e=this;this.collection.each(function(t){e.groupModel(t)})},groupModel:function(e){var i=this.getGroup(e.attributes),n=this.getSection(e.attributes),s=this.groups.get(i.id);s||(s=new t.Model(i),s.sections=new t.Collection(null,{comparator:"order"}),this.groups.add(s));var o=s.sections.get(n.id);o||(o=new t.Model(n),o.items=new t.Collection(null,{comparator:"order"}),s.sections.add(o)),o.items.add(e)},filter:function(t,e){var i={};if(t){var n,s,o;for(n=0;n<e.length;n++)s=e[n],(o=this.collection.get(s.id))&&(i[o.id]=o)}var r=!1;return this.children.each(function(e){e.filter(t,i)&&(r=!0)}),r?this.closeEmptySearchView():this.showEmptySearchView(t),r},find:function(t){var e,i,n;for(e in this.children._views)if(i=this.children._views[e],n=i.find(t))return n},showEmptySearchView:function(t){this.closeEmptySearchView(),this._emptyView=new this.emptySearchView({message:'<p>We could not find anything related to "'+t+'"</p>'}),this.$el.append(this._emptyView.render().el)},closeEmptySearchView:function(){this._emptyView&&(this._emptyView.remove(),delete this._emptyView)}});return{ConceptIndex:a,ConceptGroup:r,ConceptSection:o,ConceptItem:s}});
-//@ sourceMappingURL=index.js.map
+/* global define */
+
+define([
+    'backbone',
+    '../core',
+    '../base',
+    '../accordion'
+], function(Backbone, c, base, accordion) {
+
+
+    var ConceptItem  = accordion.AccordionItem.extend({
+        events: {
+            'click a': 'click'
+        },
+
+        initialize: function() {
+            this.listenTo(c, c.CONCEPT_FOCUS, this.toggleFocus);
+        },
+
+        click: function(event) {
+            event.preventDefault();
+
+            c.trigger(c.CONCEPT_FOCUS, this.model.id);
+        },
+
+        toggleFocus: function(id) {
+            this.$el.toggleClass('active', id === this.model.id);
+        }
+    });
+
+
+    var ConceptSection = accordion.AccordionSection.extend({
+        itemView: ConceptItem,
+
+        filter: function(query, models) {
+            // If any children are visible, show this section, otherwise hide it
+            var show = false;
+
+            this.children.each(function(view) {
+                if (!query || models[view.model.id]) {
+                    view.$el.show();
+                    show = true;
+                }
+                else {
+                    view.$el.hide();
+                }
+            });
+
+            this.$el.toggle(show);
+
+            return show;
+        }
+    });
+
+
+    var ConceptGroup = accordion.AccordionGroup.extend({
+        itemView: ConceptSection,
+
+        filter: function(query, models) {
+            // If any sections are visible, show this group, otherwise hide it
+            var show = false;
+
+            this.children.each(function(view) {
+                if (view.filter(query, models)) show = true;
+            });
+
+            if (!query) {
+                this.$el.show();
+                this.renderState();
+            } else if (show) {
+                this.$el.show();
+                this.expand();
+            } else {
+                this.$el.hide();
+            }
+
+            return show;
+        },
+
+        find: function(model) {
+            var cid, view, child;
+
+            for (cid in this.children._views) {
+                view = this.children._views[cid];
+
+                if (view.children && (child = view.children.findByModel(model))) {
+                    return child;
+                }
+            }
+        }
+    });
+
+
+    var ConceptIndex = accordion.Accordion.extend({
+        className: 'concept-index accordion',
+
+        itemView: ConceptGroup,
+
+        emptySearchView: base.EmptySearchView,
+
+        // Override to create the parsed collection and render it
+        showCollection: function() {
+            this.resetGroups();
+
+            var _this = this;
+
+            this.groups.each(function(item, index) {
+                _this.addItemView(item, _this.getItemView(item), index);
+            });
+        },
+
+        getGroup: function(attrs) {
+            if (attrs.category) {
+                var group = attrs.category;
+
+                // Roll up parents to top-level group
+                while (group.parent) group = group.parent;
+
+                return group;
+            }
+
+            // Return the default group 'Other'
+            return {
+                id: -1,
+                name: 'Other'
+            };
+        },
+
+        getSection: function(attrs) {
+            if (attrs.category && attrs.category.parent) {
+                return attrs.category;
+            }
+
+            // Return the default section 'Other'
+            return {
+                id: -1,
+                name: 'Other'
+            };
+        },
+
+        resetGroups: function() {
+            if (!this.groups) {
+                this.groups = new Backbone.Collection(null, {
+                    comparator: 'order'
+                });
+            }
+            else {
+                this.groups.reset();
+            }
+
+            var _this = this;
+
+            this.collection.each(function(model) {
+                _this.groupModel(model);
+            });
+        },
+
+        // Group by category and sub-category
+        groupModel: function(model) {
+            var groupAttrs = this.getGroup(model.attributes),
+                sectionAttrs = this.getSection(model.attributes);
+
+            // Get the top-level group for the model
+            var group = this.groups.get(groupAttrs.id);
+
+            if (!group) {
+                group = new Backbone.Model(groupAttrs);
+
+                group.sections = new Backbone.Collection(null, {
+                    comparator: 'order'
+                });
+
+                this.groups.add(group);
+            }
+
+            // Get the section (sub-group) for the model
+            var section = group.sections.get(sectionAttrs.id);
+
+            if (!section) {
+                section = new Backbone.Model(sectionAttrs);
+
+                section.items = new Backbone.Collection(null, {
+                    comparator: 'order'
+                });
+
+                group.sections.add(section);
+            }
+
+            section.items.add(model);
+        },
+
+        filter: function(query, resp) {
+            var models = {};
+
+            if (query) {
+                var i, attrs, model;
+
+                for (i = 0; i < resp.length; i++) {
+                    attrs = resp[i];
+
+                    if ((model = this.collection.get(attrs.id))) {
+                        models[model.id] = model;
+                    }
+                }
+            }
+
+            var show = false;
+
+            this.children.each(function(view) {
+                if (view.filter(query, models)) show = true;
+            });
+
+            if (show) {
+                this.closeEmptySearchView();
+            } else {
+                this.showEmptySearchView(query);
+            }
+
+            return show;
+        },
+
+        find: function(model) {
+            var cid, view, child;
+
+            for (cid in this.children._views) {
+                view = this.children._views[cid];
+
+                if ((child = view.find(model))) {
+                    return child;
+                }
+            }
+        },
+
+        // Override show/close empty view to append and remove rather
+        // than adding it to the internal children collection.
+        showEmptySearchView: function(query) {
+            this.closeEmptySearchView();
+
+            this._emptyView = new this.emptySearchView({
+                message: '<p>We could not find anything related to "' +
+                         query + '"</p>'
+            });
+
+            this.$el.append(this._emptyView.render().el);
+        },
+
+        closeEmptySearchView: function() {
+            if (this._emptyView) {
+                this._emptyView.remove();
+                delete this._emptyView;
+            }
+        }
+    });
+
+
+    return {
+        ConceptIndex: ConceptIndex,
+        ConceptGroup: ConceptGroup,
+        ConceptSection: ConceptSection,
+        ConceptItem: ConceptItem
+    };
+
+});

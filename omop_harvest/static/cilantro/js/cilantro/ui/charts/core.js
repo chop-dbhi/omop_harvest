@@ -1,2 +1,208 @@
-define(["jquery","underscore","backbone","highcharts","../base","../controls","./options"],function(t,e,i,n,s,o,r){var a={el:"chart.renderTo",type:"chart.type",height:"chart.height",width:"chart.width",labelFormatter:"plotOptions.series.dataLabels.formatter",tooltipFormatter:"tooltip.formatter",animate:"plotOptions.series.animation",categories:"xAxis.categories",title:"title.text",subtitle:"subtitle.text",xAxis:"xAxis.title.text",yAxis:"yAxis.title.text",stacking:"plotOptions.series.stacking",legend:"legend.enabled",suffix:"tooltip.valueSuffix",prefix:"tooltip.valuePrefix",series:"series"},l=o.Control.extend({template:function(){},emptyView:s.EmptyView,loadView:s.LoadView,chartOptions:r.defaults,constructor:function(i){e.bindAll(this,"onChartLoaded");var n=e.extend({},i.chart);if(null!==n){var s;for(var r in n)s=n[r],a[r]&&(this.setOption(a[r],s),delete n[r]);this.chartOptions=t.extend(!0,{},this.chartOptions,n)}("undefined"==typeof this.chartOptions.el||null===typeof this.chartOptions.el)&&(this.chartOptions.el=this.el),o.Control.prototype.constructor.call(this,i)},setOption:function(t,e){for(var i,n=this.chartOptions,s=t.split("."),o=s.pop(),r=0;r<s.length;r++)i=s[r],null===n[i]&&(n[i]={}),n=n[i];n[o]=e},getChartOptions:function(){return this.chartOptions},showEmptyView:function(){var t=new this.emptyView({message:"No data is available for charting"});this.$el.html(t.render().el)},onChartLoaded:function(){this.$el.find(".load-view").remove()},renderChart:function(t){this.initialize();var e=new this.loadView({message:"Loading chart"});this.$el.append(e.render().el),t.chart.events={load:this.onChartLoaded},this.chart&&"function"==typeof this.chart.destroy&&this.chart.destroy(),this.chart=new n.Chart(t)}});l.setDefaultOption=function(t,i){var n,s,o,r,a,l;s=this.prototype.chartOptions=e.clone(this.prototype.chartOptions),l=t.split("."),n=l.pop(),o=null,r=null;for(var h=0;h<l.length;h++)a=l[h],o=s,s=null!==o[a]&&"undefined"!=typeof o[a]?e.clone(o[a]):{},o[a]=s;s[n]=i};var h=l.extend({});h.setDefaultOption("chart.type","area");var c=l.extend({});c.setDefaultOption("chart.type","areaspline");var u=l.extend({});u.setDefaultOption("chart.type","bar");var d=l.extend({});d.setDefaultOption("chart.type","column");var p=l.extend({});p.setDefaultOption("chart.type","line");var f=l.extend({});f.setDefaultOption("chart.type","pie"),f.setDefaultOption("legend.enabled",!0);var g=l.extend({});g.setDefaultOption("chart.type","scatter");var v=l.extend({});v.setDefaultOption("chart.type","spline");var m=l.extend({chartOptions:r.sparkline}),y={Chart:l,AreaChart:h,AreaSplineChart:c,BarChart:u,ColumnChart:d,LineChart:p,PieChart:f,ScatterChart:g,SplineChart:v,Sparkline:m};return e.extend(i,y),y});
-//@ sourceMappingURL=core.js.map
+/* global define */
+
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'highcharts',
+    '../base',
+    '../controls',
+    './options'
+], function($, _, Backbone, Highcharts, base, controls, chartOptions) {
+
+    // Highcharts options are very nested.. this makes the common ones more
+    // accessible. Use the 'setOption' method to parse the options.
+    var OPTIONS_MAP = {
+        el: 'chart.renderTo',
+        type: 'chart.type',
+        height: 'chart.height',
+        width: 'chart.width',
+        labelFormatter: 'plotOptions.series.dataLabels.formatter',
+        tooltipFormatter: 'tooltip.formatter',
+        animate: 'plotOptions.series.animation',
+        categories: 'xAxis.categories',
+        title: 'title.text',
+        subtitle: 'subtitle.text',
+        xAxis: 'xAxis.title.text',
+        yAxis: 'yAxis.title.text',
+        stacking: 'plotOptions.series.stacking',
+        legend: 'legend.enabled',
+        suffix: 'tooltip.valueSuffix',
+        prefix: 'tooltip.valuePrefix',
+        series: 'series'
+    };
+
+    var Chart = controls.Control.extend({
+        template: function() {},
+
+        emptyView: base.EmptyView,
+
+        loadView: base.LoadView,
+
+        chartOptions: chartOptions.defaults,
+
+        constructor: function(options) {
+            _.bindAll(this, 'onChartLoaded');
+
+            var chartOptions = _.extend({}, options.chart);
+            if (chartOptions !== null) {
+                var value;
+
+                // Map convenience options to the real ones.
+                for (var key in chartOptions) {
+                    value = chartOptions[key];
+
+                    if (OPTIONS_MAP[key]) {
+                        this.setOption(OPTIONS_MAP[key], value);
+                        delete chartOptions[key];
+                    }
+                }
+
+                this.chartOptions = $.extend(true, {}, this.chartOptions, chartOptions);
+            }
+
+            if (typeof this.chartOptions.el === 'undefined' ||
+                    typeof this.chartOptions.el === null) {
+                this.chartOptions.el = this.el;
+            }
+
+            controls.Control.prototype.constructor.call(this, options);
+        },
+
+        // Convenience method for setting an option since the option hierarchy
+        // is so large. The 'key' may use the dot-notion for accessing nested
+        // structures.
+        setOption: function(key, value) {
+            var options = this.chartOptions,
+                toks = key.split('.'),
+                last = toks.pop();
+
+            var tok;
+            for (var i = 0; i < toks.length; i++) {
+                tok = toks[i];
+
+                if (options[tok] === null) {
+                    options[tok] = {};
+                }
+
+                options = options[tok];
+            }
+
+            options[last] = value;
+        },
+
+        getChartOptions: function() {
+            return this.chartOptions;
+        },
+
+        showEmptyView: function() {
+            var view = new this.emptyView({
+                message: 'No data is available for charting'
+            });
+
+            this.$el.html(view.render().el);
+        },
+
+        onChartLoaded: function() {
+            this.$el.find('.load-view').remove();
+        },
+
+        renderChart: function(options) {
+            this.initialize();
+
+            var view = new this.loadView({
+                message: 'Loading chart'
+            });
+
+            this.$el.append(view.render().el);
+
+            options.chart.events = {
+                load: this.onChartLoaded
+            };
+
+            if (this.chart) {
+                if (typeof this.chart.destroy === 'function') {
+                    this.chart.destroy();
+                }
+            }
+
+            this.chart = new Highcharts.Chart(options);
+        }
+
+    });
+
+    // Set a default option for the class.
+    Chart.setDefaultOption = function(key, value) {
+        var last, options, prev, prevTok, tok, toks;
+
+        options = this.prototype.chartOptions = _.clone(this.prototype.chartOptions);
+
+        toks = key.split('.');
+        last = toks.pop();
+        prev = null;
+        prevTok = null;
+
+        for (var i = 0; i < toks.length; i++) {
+            tok = toks[i];
+            prev = options;
+
+            if (prev[tok] !== null && typeof prev[tok] !== 'undefined') {
+                options = _.clone(prev[tok]);
+            }
+            else {
+                options = {};
+            }
+
+            prev[tok] = options;
+        }
+
+        options[last] = value;
+    };
+
+
+    var AreaChart = Chart.extend({});
+    AreaChart.setDefaultOption('chart.type', 'area');
+
+    var AreaSplineChart = Chart.extend({});
+    AreaSplineChart.setDefaultOption('chart.type', 'areaspline');
+
+    var BarChart = Chart.extend({});
+    BarChart.setDefaultOption('chart.type', 'bar');
+
+    var ColumnChart = Chart.extend({});
+    ColumnChart.setDefaultOption('chart.type', 'column');
+
+    var LineChart = Chart.extend({});
+    LineChart.setDefaultOption('chart.type', 'line');
+
+    var PieChart = Chart.extend({});
+    PieChart.setDefaultOption('chart.type', 'pie');
+    PieChart.setDefaultOption('legend.enabled', true);
+
+    var ScatterChart = Chart.extend({});
+    ScatterChart.setDefaultOption('chart.type', 'scatter');
+
+    var SplineChart = Chart.extend({});
+    SplineChart.setDefaultOption('chart.type', 'spline');
+
+    var Sparkline = Chart.extend({
+        chartOptions: chartOptions.sparkline
+    });
+
+    var charts = {
+        Chart: Chart,
+        AreaChart: AreaChart,
+        AreaSplineChart: AreaSplineChart,
+        BarChart: BarChart,
+        ColumnChart: ColumnChart,
+        LineChart: LineChart,
+        PieChart: PieChart,
+        ScatterChart: ScatterChart,
+        SplineChart: SplineChart,
+        Sparkline: Sparkline
+    };
+
+    _.extend(Backbone, charts);
+
+    return charts;
+});

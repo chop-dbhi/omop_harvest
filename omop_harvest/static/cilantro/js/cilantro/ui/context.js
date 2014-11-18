@@ -1,2 +1,12 @@
-define(["underscore","./context/panel"],function(t){var e=[].slice.call(arguments,1);return t.extend.apply(t,[{}].concat(e))});
-//@ sourceMappingURL=context.js.map
+/* global define */
+
+define([
+    'underscore',
+    './context/panel'
+], function(_) {
+
+    var mods = [].slice.call(arguments, 1);
+
+    return _.extend.apply(_, [{}].concat(mods));
+
+});

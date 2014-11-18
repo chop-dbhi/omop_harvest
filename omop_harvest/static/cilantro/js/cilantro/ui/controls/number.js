@@ -1,2 +1,29 @@
-define(["./range"],function(t){var e=t.RangeControl.extend({getLowerBoundValue:function(){var t=this.ui.lowerBound.val().trim();return t?parseFloat(t):void 0},getUpperBoundValue:function(){var t=this.ui.upperBound.val().trim();return t?parseFloat(t):void 0}});return{NumberControl:e}});
-//@ sourceMappingURL=number.js.map
+/* global define */
+
+define([
+    './range'
+], function(range) {
+
+    // A control for entering an inclusive or exclusive numeric range
+    var NumberControl = range.RangeControl.extend({
+
+        // Cast the lower bound to a number for use in the getValue() method
+        getLowerBoundValue: function() {
+            var value = this.ui.lowerBound.val().trim();
+            if (value) return parseFloat(value);
+        },
+
+        // Cast the upper bound to a number for use in the getValue() method
+        getUpperBoundValue: function() {
+            var value = this.ui.upperBound.val().trim();
+            if (value) return parseFloat(value);
+        }
+
+    });
+
+
+    return {
+        NumberControl: NumberControl
+    };
+
+});

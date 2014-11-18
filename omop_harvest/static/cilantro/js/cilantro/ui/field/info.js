@@ -1,2 +1,19 @@
-define(["underscore","marionette"],function(e,t){var i=t.ItemView.extend({className:"field-info",template:"field/info"});return{FieldInfo:i}});
-//@ sourceMappingURL=info.js.map
+/* global define */
+
+define([
+    'underscore',
+    'marionette'
+], function(_, Marionette) {
+
+    var FieldInfo = Marionette.ItemView.extend({
+        className: 'field-info',
+
+        template: 'field/info'
+    });
+
+
+    return {
+        FieldInfo: FieldInfo
+    };
+
+});

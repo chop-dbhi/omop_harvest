@@ -1,2 +1,230 @@
-define(["underscore","backbone","./models/base"],function(t,e,i){var n=e.Model.extend({defaults:{visible:!0},show:function(){this.set({visible:!0})},hide:function(){this.set({visible:!1})}}),s=e.Collection.extend({model:n}),o=e.Model.extend({constructor:function(t,i,s){i instanceof n||(i=new n(i)),this.index=i,e.Model.prototype.constructor.call(this,t,s)},size:function(){return 1},width:function(){return 1}}),r=e.Collection.extend({constructor:function(i,n,s){this.indexes=n;var r=this;this.model=function(e,i){var n=r.indexes.at(t.keys(r._byId).length);o.prototype.constructor.call(this,{value:e},n,i)},this.model.prototype=o.prototype,e.Collection.prototype.constructor.call(this,i,s)}}),a=e.Model.extend({constructor:function(i,n,o){var a;o||(o={}),n instanceof s||(n=new s(n)),this.indexes=n,t.isArray(i)?(a=i,i=null):o.parse=!0,this.data=new r(a,n),e.Model.prototype.constructor.call(this,i,o)},parse:function(t,e){return this.data.reset(t.values,e),delete t.values,t},isColumn:function(){return 1===this.width()},isRow:function(){return!this.isColumn()},size:function(){return this.isColumn()?this.data.length:1},width:function(){return this.indexes.length}}),h=e.Collection.extend({constructor:function(t,i,n){this.indexes=i,e.Collection.prototype.constructor.call(this,t,n);var s=this;this.model=function(t,e){a.prototype.constructor.call(this,t,s.indexes,e)},this.model.prototype=a.prototype}}),l=i.Model.extend({constructor:function(e,n,o){var r;o||(o={}),n instanceof s||(n=new s(n)),this.indexes=n,t.isArray(e)?(r=e,e=null):o.parse=!0,this.series=new h(r,n),i.Model.prototype.constructor.call(this,e,o)},parse:function(t,e){return i.Model.prototype.parse.call(this,t,e),this.indexes.reset(t.keys,e),this.series.reset(t.objects,e),delete t.keys,delete t.objects,t},size:function(){return this.series.length},width:function(){return this.indexes.length},column:function(t){var e=this.series.map(function(e){return e.data.at(t)});return new a(e,this.indexes.at(t))}}),u=i.Collection.extend({model:l,constructor:function(t,e){this.indexes=new s,this.on("reset",function(t){var e=t.models[0];return e?this.indexes.reset(e.indexes.models):void 0}),this.on("add",function(t,e){return 1===e.length?this.indexes.reset(t.indexes.models):void 0}),i.Collection.prototype.constructor.call(this,t,e)}});return{Datum:o,Frame:l,FrameArray:u,Index:n,Indexes:s,Series:a}});
-//@ sourceMappingURL=structs.js.map
+/* global define */
+
+define([
+    'underscore',
+    'backbone',
+    './models/base'
+], function(_, Backbone, base) {
+
+    var Index = Backbone.Model.extend({
+        defaults: {
+            visible: true
+        },
+
+        show: function() {
+            this.set({
+                visible: true
+            });
+        },
+
+        hide: function() {
+            this.set({
+                visible: false
+            });
+        }
+    });
+
+    var Indexes = Backbone.Collection.extend({
+        model: Index
+    });
+
+    var Datum = Backbone.Model.extend({
+        constructor: function(attrs, index, options) {
+            if (!(index instanceof Index)) {
+                index = new Index(index);
+            }
+
+            this.index = index;
+
+            Backbone.Model.prototype.constructor.call(this, attrs, options);
+        },
+
+        size: function() {
+            return 1;
+        },
+
+        width: function() {
+            return 1;
+        }
+    });
+
+    // A collection of Datum objects which serves as an internal container for
+    // the Series.
+    var _DatumArray = Backbone.Collection.extend({
+        constructor: function(attrs, indexes, options) {
+            this.indexes = indexes;
+
+            var _this = this;
+
+            this.model = function(value, options) {
+                // Collections length are not updated immediately so this uses the
+                // internal hash to determine the next index.
+                var index = _this.indexes.at(_.keys(_this._byId).length);
+
+                Datum.prototype.constructor.call(this, {value: value}, index, options);
+            };
+
+            this.model.prototype = Datum.prototype;
+
+            Backbone.Collection.prototype.constructor.call(this, attrs, options);
+        }
+    });
+
+    var Series = Backbone.Model.extend({
+        constructor: function(attrs, indexes, options) {
+            var data;
+
+            if (!options) options = {};
+
+            if (!(indexes instanceof Indexes)) {
+                indexes = new Indexes(indexes);
+            }
+
+            this.indexes = indexes;
+
+            if (_.isArray(attrs)) {
+                data = attrs;
+                attrs = null;
+            }
+            else {
+                options.parse = true;
+            }
+
+            this.data = new _DatumArray(data, indexes);
+
+            Backbone.Model.prototype.constructor.call(this, attrs, options);
+        },
+
+        parse: function(resp, options) {
+            this.data.reset(resp.values, options);
+            delete resp.values;
+            return resp;
+        },
+
+        isColumn: function() {
+            return this.width() === 1;
+        },
+
+        isRow: function() {
+            return !this.isColumn();
+        },
+
+        size: function() {
+            if (this.isColumn()) {
+                return this.data.length;
+            }
+
+            return 1;
+        },
+
+        width: function() {
+            return this.indexes.length;
+        }
+    });
+
+    // Collection of Series objects that serves as an internal container for
+    // the Frame object.
+    var _SeriesArray = Backbone.Collection.extend({
+        constructor: function(attrs, indexes, options) {
+            this.indexes = indexes;
+
+            var _this = this;
+
+            this.model = function(attrs, options) {
+                Series.prototype.constructor.call(this, attrs, _this.indexes, options);
+            };
+
+            this.model.prototype = Series.prototype;
+
+            Backbone.Collection.prototype.constructor.call(this, attrs, options);
+        }
+    });
+
+    var Frame = base.Model.extend({
+        constructor: function(attrs, indexes, options) {
+            var data;
+
+            if (!options) options = {};
+
+            if (!(indexes instanceof Indexes)) {
+                indexes = new Indexes(indexes);
+            }
+
+            this.indexes = indexes;
+
+            if (_.isArray(attrs)) {
+                data = attrs;
+                attrs = null;
+            }
+            else {
+                options.parse = true;
+            }
+
+            this.series = new _SeriesArray(data, indexes);
+
+            base.Model.prototype.constructor.call(this, attrs, options);
+        },
+
+        parse: function(resp, options) {
+            base.Model.prototype.parse.call(this, resp, options);
+
+            this.indexes.reset(resp.keys, options);
+            this.series.reset(resp.objects, options);
+
+            delete resp.keys;
+            delete resp.objects;
+
+            return resp;
+        },
+
+        size: function() {
+            return this.series.length;
+        },
+
+        width: function() {
+            return this.indexes.length;
+        },
+
+        column: function(index) {
+            var data = this.series.map(function(series) {
+                return series.data.at(index);
+            });
+
+            return new Series(data, this.indexes.at(index));
+        }
+    });
+
+    var FrameArray = base.Collection.extend({
+        model: Frame,
+
+        constructor: function(attrs, options) {
+            this.indexes = new Indexes();
+
+            this.on('reset', function(collection) {
+                var model = collection.models[0];
+
+                if (model) {
+                    return this.indexes.reset(model.indexes.models);
+                }
+            });
+
+            this.on('add', function(model, collection) {
+                if (collection.length === 1) {
+                    return this.indexes.reset(model.indexes.models);
+                }
+            });
+
+            base.Collection.prototype.constructor.call(this, attrs, options);
+        }
+    });
+
+    return {
+        Datum: Datum,
+        Frame: Frame,
+        FrameArray: FrameArray,
+        Index: Index,
+        Indexes: Indexes,
+        Series: Series
+    };
+
+});
