@@ -21,8 +21,6 @@ csvkit
 python-ldap
 django-registration2==0.9.3
 django-siteauth==1.0.0
-git+http://github.research.chop.edu/cbmi/django-chopauth.git#egg=django-chopauth
-git+http://github.research.chop.edu/cbmi/cbmi-util#egg=chop-util
 dj-database-url==0.2.2
 
 # Testing requirements
