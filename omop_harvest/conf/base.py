@@ -13,13 +13,13 @@ PROJECT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..'
 # Read more about projects vs. apps here:
 # https://docs.djangoproject.com/en/1.3/intro/tutorial01/#creating-models
 INSTALLED_APPS = (
-    'omop_harvest',
-
     'south',
     'serrano',
     'avocado',
     'modeltree',
     'haystack',
+
+    'omop_harvest',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,6 +50,9 @@ INTERNAL_IPS = ('127.0.0.1', '::1')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+SOUTH_LOGGING_ON = True
+SOUTH_LOGGING_FILE = os.path.join(PROJECT_PATH, 'south.log')
+
 #
 # DATABASES
 # Each database can be specified here, but passwords should be in a separate
@@ -60,14 +63,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(PROJECT_PATH, 'harvest.db')
-    },
-    'omop': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH, 'omop.db')
     }
 }
-
-DATABASE_ROUTERS = ('omop_harvest.routers.OmopRouter',)
 
 #
 # LOCALITY

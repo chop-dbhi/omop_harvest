@@ -1,51 +1,72 @@
-# Harvest
-
-FROM reslnops01.research.chop.edu:5000/django_baseimage-master:d87766f
+# OMOP Harvest
+FROM phusion/baseimage:0.9.13
 
 MAINTAINER Aaron Browne <brownea@email.chop.edu>
 
-# Install postgresql client
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/apt/sources.list.d/pgdg.list 
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+# Install system dependencies
 RUN apt-get update -qq --fix-missing
-RUN apt-get install -y postgresql-client-9.3
+RUN apt-get install -y\
+    build-essential\
+    git-core\
+    libldap2-dev\
+    libpq-dev\
+    libsasl2-dev\
+    libssl-dev\
+    libxml2-dev\
+    libxslt1-dev\
+    libffi-dev\
+    openssl\
+    python-dev\
+    python-setuptools\
+    wget\
+    zlib1g-dev\
+    postgresql-client \
+    jq
 
-# Install required python packages not provided by django_baseimage
+# Install system-wide python dependencies
+RUN easy_install pip
+RUN pip install uwsgi\
+    virtualenv
+
+# Create python virtual environment for the app
+RUN virtualenv --no-site-packages /opt/ve
+
+# Install python dependencies
+# Essential packages
+RUN /opt/ve/bin/pip install "django>=1.5,<1.6"\
+    "south==0.8.4"\
+    "uWSGI"\
+    "psycopg2==2.5.1"\
+    "dj-database-url==0.2.2"\
 # Harvest components
-RUN /opt/ve/bin/pip install "avocado>=2.3.0,<2.4"
-RUN /opt/ve/bin/pip install "serrano>=2.3.0,<2.4"
-RUN /opt/ve/bin/pip install "modeltree>=1.1.7,<1.2"
-RUN /opt/ve/bin/pip install "django-haystack>=2.0,<2.2"
-RUN /opt/ve/bin/pip install "python-memcached==1.53"
+    "avocado>=2.3.0,<2.4"\
+    "serrano>=2.3.0,<2.4"\
+    "modeltree>=1.1.7,<1.2"\
 # Harvest extensions
-RUN /opt/ve/bin/pip install "whoosh>=2.6,<2.7"
-RUN /opt/ve/bin/pip install "openpyxl"
-RUN /opt/ve/bin/pip install "csvkit"
-RUN /opt/ve/bin/pip install "git+http://github.research.chop.edu/cbmi/django-chopauth.git#egg=django-chopauth"
-RUN /opt/ve/bin/pip install "django-siteauth==1.0.0"
-# Testing requirements
-RUN /opt/ve/bin/pip install "selenium"
-RUN /opt/ve/bin/pip install "coveralls"
-RUN /opt/ve/bin/pip install "discover"
-RUN /opt/ve/bin/pip install "requests"
-RUN /opt/ve/bin/pip install "pytz"
+    "django-haystack>=2.0,<2.2"\
+    "python-memcached==1.53"\
+    "whoosh>=2.6,<2.7"\
+    "openpyxl"\
+    "csvkit"\
+    "django-siteauth==1.0.0"
 
-# Add Optional Logstash Logging Support
-RUN curl https://download.elasticsearch.org/logstash/logstash/logstash-1.4.2.tar.gz -o /tmp/logstash-1.4.2.tar.gz
-RUN tar -xzf /tmp/logstash-1.4.2.tar.gz -C /opt/
-RUN mv /opt/logstash-1.4.2 /opt/logstash
-RUN chmod +x -R /opt/logstash/bin/
+# Clean up after dependency installation
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Add the application files
+# Create app directories
+RUN mkdir /opt/app /var/log/app /etc/service/app
+
+# Add the application files and initialization and run scripts
 ADD . /opt/app/
+ADD scripts/01_application_init.sh /etc/my_init.d/01_application_init.sh
+ADD scripts/run.sh /etc/service/app/run
+RUN chmod +x /etc/my_init.d/01_application_init.sh /etc/service/app/run
 
-# Ensure all python requirements are met
+# Set environment variables
 ENV APP_NAME omop_harvest
-RUN /opt/ve/bin/pip install -r /opt/app/requirements.txt --use-mirrors
 
-# Add custom application initialization and run scripts that:
-#   1. don't try to get project settings from etcd
-COPY cid/my_init.d /etc/my_init.d
-COPY cid/service /etc/service
-
+# Expose a port for the Harvest web app
 EXPOSE 8000
+
+# The default command to kick off the initialization and run scripts
+CMD ["/sbin/my_init"]

@@ -10,7 +10,16 @@ class OmopRouter(object):
     def db_for_read(self, model, **hints):
         if model._meta.app_label == self.app_name:
             return self.database_name
+        return None
+
+    def db_for_write(self, model, **hints):
+        if model._meta.app_label == self.app_name:
+            return self.database_name
+        return None
 
     def allow_syncdb(self, db, model):
         if db == self.database_name:
+            return model._meta.app_label in (self.app_name, 'south')
+        elif model._meta.app_label == self.app_name:
             return False
+        return None

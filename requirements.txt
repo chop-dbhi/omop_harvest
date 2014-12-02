@@ -1,10 +1,7 @@
---allow-external argparse
+# Essential packages
 django>=1.5,<1.6
-Markdown
+south==0.8.4
 uWSGI
-fabric==1.8.0
-
-# Database Drivers, the Python stdlib has support for SQLite
 psycopg2==2.5.1
 dj-database-url==0.2.2
 
@@ -14,9 +11,9 @@ serrano>=2.3.0,<2.3.3
 modeltree>=1.1.7,<1.2
 
 # Harvest extensions
-whoosh>=2.6,<2.7
 django-haystack>=2.0,<2.2
 python-memcached==1.53
+whoosh>=2.6,<2.7
 openpyxl
 csvkit
 django-siteauth==1.0.0

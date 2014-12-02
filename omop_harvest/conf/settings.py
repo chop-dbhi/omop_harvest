@@ -4,28 +4,22 @@ from .base import *
 import dj_database_url
 
 curdir = os.path.dirname(os.path.abspath(__file__))
-project_settings = json.loads(open(os.path.join(curdir, '../../.project_config.json'), 'r').read())['project_settings']
+project_settings = json.loads(open(os.path.join(curdir, '../../.project_config.json'), 'r').read())
 
-environment = get_env_variable('APP_ENV')
-
-if environment not in project_settings.keys():
-    error_msg = "Settings for {0} environment not found in project configuration.".format(environment)
-    raise ImproperlyConfigured(error_msg)
-
-# Check here to see if db details exist in env
-LINKED_DB_IP = os.environ.get('DB_PORT_5432_TCP_ADDR')
 # Check here to see if memcache details exist in env
 LINKED_MEMCACHE = os.environ.get('MC_PORT_11211_TCP_ADDR')
 
-if LINKED_DB_IP:
-    DATABASES = {
-        # TODO: Make the db name here dependent on the project_settings
-        'default': dj_database_url.parse('postgresql://docker:docker@{0}:5432/omop_harvest'.format(LINKED_DB_IP))
+if 'default' in project_settings['databases']:
+    DATABASES['default'] = dj_database_url.parse(project_settings['databases']['default'])
+if 'omop' in project_settings['databases']:
+    DATABASES['omop'] = dj_database_url.parse(project_settings['databases']['omop'])
+    DATABASE_ROUTERS = ('omop_harvest.routers.OmopRouter',)
+    SOUTH_DATABASE_ADAPTERS = {
+        'omop': 'omop_harvest.dbops.{}'.format(DATABASES['omop']['ENGINE'].split('.')[-1])
     }
 else:
-    DATABASES = {
-        'default': dj_database_url.parse(project_settings[environment]['databases']['default']),
-        'omop': dj_database_url.parse(project_settings[environment]['databases']['omop'])
+    SOUTH_DATABASE_ADAPTERS = {
+        'default': 'omop_harvest.dbops.{}'.format(DATABASES['default']['ENGINE'].split('.')[-1])
     }
 
 if LINKED_MEMCACHE:
@@ -34,21 +28,17 @@ if LINKED_MEMCACHE:
         'LOCATION': '{0}:11211'.format(LINKED_MEMCACHE)
     })
 
-LDAP = project_settings[environment]['django']['LDAP']
+EMAIL_HOST = project_settings['django']['EMAIL_HOST']
 
-EMAIL_HOST = project_settings[environment]['django']['EMAIL_HOST']
-
-EMAIL_PORT = project_settings[environment]['django']['EMAIL_PORT']
+EMAIL_PORT = project_settings['django']['EMAIL_PORT']
 
 EMAIL_SUBJECT_PREFIX = '[OMOP Harvest] '
 
-DEBUG = project_settings[environment]['django']['DEBUG']
+DEBUG = project_settings['django']['DEBUG']
 
-FORCE_SCRIPT_NAME = project_settings[environment]['django']['FORCE_SCRIPT_NAME']
+FORCE_SCRIPT_NAME = project_settings['django']['FORCE_SCRIPT_NAME']
 
-SECRET_KEY = project_settings[environment]['django']['SECRET_KEY']
-
-ALLOWED_HOSTS = project_settings[environment]['django']['ALLOWED_HOSTS']
+SECRET_KEY = project_settings['django']['SECRET_KEY']
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(FORCE_SCRIPT_NAME, ADMIN_MEDIA_PREFIX[1:])
