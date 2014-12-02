@@ -6,6 +6,7 @@ fabric==1.8.0
 
 # Database Drivers, the Python stdlib has support for SQLite
 psycopg2==2.5.1
+dj-database-url==0.2.2
 
 # Harvest components
 avocado>=2.3.0,<2.4.0
@@ -18,16 +19,4 @@ django-haystack>=2.0,<2.2
 python-memcached==1.53
 openpyxl
 csvkit
-python-ldap
-django-registration2==0.9.3
 django-siteauth==1.0.0
-git+http://github.research.chop.edu/cbmi/django-chopauth.git#egg=django-chopauth
-git+http://github.research.chop.edu/cbmi/cbmi-util#egg=chop-util
-dj-database-url==0.2.2
-
-# Testing requirements
-selenium
-coveralls
-discover
-requests
-pytz

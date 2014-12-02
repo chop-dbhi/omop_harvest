@@ -1,6 +1,0 @@
-{% load url from future %}
-{% if status == 'Approve' %}Your account request has been accepted.
-You can login here: http://{{ site.domain }}{% url "login" %}.
-{% else %}Your account has been carefully reviewed, but has not been accepted.{% endif %}
-
-{% if comment %}{{ comment }}{% endif %}

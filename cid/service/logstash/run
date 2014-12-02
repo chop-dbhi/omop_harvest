@@ -1,4 +1,0 @@
-#!/bin/bash
-if [ "$(ls -A /opt/app)" ]; then
-    /opt/logstash/bin/logstash -f /opt/app/cid/lib/logstash/omop_harvest.logstash.conf
-fi

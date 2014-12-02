@@ -3,32 +3,10 @@
     <div class=navbar-inner>
         <div class=container-fluid>
             <a href="{% url "landing" %}" class="brand"> PEDSnet Harvest </a>
-            {% if user.is_authenticated %}
             <ul class=nav>
                 <li><a href="{% url "workspace" %}"><i class="icon-home"></i> <span class=hidden-phone>Workspace</a></li>                
                 <li><a href="{% url "query" %}"><i class=icon-search></i> <span class=hidden-phone>Query</span></a></li>
                 <li><a href="{% url "results" %}"><i class=icon-table></i> <span class=hidden-phone>Results</span></a></li>
-            </ul>
-            {% endif %}
-            <ul class="nav pull-right">
-            {% if user.is_authenticated %}
-                <li class="dropdown">
-                    <a class=dropdown-toggle data-toggle=dropdown href=#>{% firstof user.get_full_name user %} <b class=caret></b></a>
-                    <ul class="dropdown-menu" role=menu>
-                        <li><span class=navbar-text></span></li>
-                        {% if unmoderated_accounts and perms.registration.change_registrationprofile %}
-                        <li><a style="color: green" href="{% url "registration_moderate_list" %}">Account Moderation <strong>( {{ unmoderated_accounts }} )</strong></a></li>
-                        {% endif %}
-                        {% if user.is_staff %}
-                            <li><a href="{% url "admin:index" %}">Admin</a></li>
-                            <li class=divider></li>
-                        {% endif %}
-                        <li><a href="{% url "logout" %}">Logout</a></li>
-                    </ul>
-                </li>
-            {% else %}
-                <li><a href="{% url "login" %}">Login</a></li>
-            {% endif %}
             </ul>
         </div>
     </div>
