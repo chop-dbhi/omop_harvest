@@ -50,9 +50,6 @@ INTERNAL_IPS = ('127.0.0.1', '::1')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-SOUTH_LOGGING_ON = True
-SOUTH_LOGGING_FILE = os.path.join(PROJECT_PATH, 'south.log')
-
 #
 # DATABASES
 # Each database can be specified here, but passwords should be in a separate

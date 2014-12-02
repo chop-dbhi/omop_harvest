@@ -106,6 +106,24 @@ class ConditionType(ConceptBase):
     class Meta(ConceptBase.Meta):
         db_table = 'condition_type'
 
+class DrugConcept(ConceptBase):
+    vocabulary_id = models.IntegerField()
+    JOIN_TABLE_FIELD = 'drug_exposure.drug_concept_id'
+    class Meta(ConceptBase.Meta):
+        db_table = 'drug_concept'
+
+class DrugType(ConceptBase):
+    vocabulary_id = models.IntegerField()
+    JOIN_TABLE_FIELD = 'drug_exposure.drug_type_concept_id'
+    class Meta(ConceptBase.Meta):
+        db_table = 'drug_type'
+
+class DrugCondition(ConceptBase):
+    vocabulary_id = models.IntegerField()
+    JOIN_TABLE_FIELD = 'drug_exposure.relevant_condition_concept_id'
+    class Meta(ConceptBase.Meta):
+        db_table = 'drug_condition'
+
 class ProcedureConcept(ConceptBase):
     vocabulary_id = models.IntegerField()
     JOIN_TABLE_FIELD = 'procedure_occurrence.procedure_concept_id'
@@ -129,6 +147,18 @@ class ObservationType(ConceptBase):
     JOIN_TABLE_FIELD = 'observation.observation_type_concept_id'
     class Meta(ConceptBase.Meta):
         db_table = 'observation_type'
+
+class ObservationCondition(ConceptBase):
+    vocabulary_id = models.IntegerField()
+    JOIN_TABLE_FIELD = 'observation.relevant_condition_concept_id'
+    class Meta(ConceptBase.Meta):
+        db_table = 'observation_condition'
+
+class ObservationValue(ConceptBase):
+    vocabulary_id = models.IntegerField()
+    JOIN_TABLE_FIELD = 'observation.value_as_concept_id'
+    class Meta(ConceptBase.Meta):
+        db_table = 'observation_value'
 
 class ConceptAncestor(models.Model):
     ancestor_concept = models.ForeignKey(Concept, related_name='conceptancestor_descendant_set')
@@ -239,10 +269,10 @@ class DrugEra(models.Model):
 class DrugExposure(models.Model):
     drug_exposure_id = models.IntegerField(primary_key=True)
     person = models.ForeignKey('Person')
-    drug_concept_id = models.IntegerField()
+    drug_concept_id = models.ForeignKey(DrugConcept, db_column='drug_concept_id')
     drug_exposure_start_date = models.DateTimeField()
     drug_exposure_end_date = models.DateTimeField(null=True, blank=True)
-    drug_type_concept_id = models.IntegerField()
+    drug_type_concept_id = models.ForeignKey(DrugType, db_column='drug_type_concept_id')
     stop_reason = models.CharField(max_length=20, blank=True, null=True)
     refills = models.DecimalField(null=True, max_digits=3, decimal_places=0, blank=True)
     quantity = models.DecimalField(null=True, max_digits=4, decimal_places=0, blank=True)
@@ -250,7 +280,7 @@ class DrugExposure(models.Model):
     sig = models.CharField(max_length=500, blank=True, null=True)
     prescribing_provider = models.ForeignKey('Provider', null=True, blank=True)
     visit_occurrence = models.ForeignKey('VisitOccurrence', null=True, blank=True)
-    relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
+    relevant_condition_concept_id = models.ForeignKey(DrugCondition, db_column='relevant_condition_concept_id', null=True, blank=True)
     drug_source_value = models.CharField(max_length=50, blank=True, null=True)
     class Meta:
         db_table = 'drug_exposure'
@@ -292,14 +322,14 @@ class Observation(models.Model):
     observation_time = models.DateTimeField(null=True, blank=True)
     value_as_number = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     value_as_string = models.CharField(max_length=60, blank=True, null=True)
-    value_as_concept_id = models.IntegerField(null=True, blank=True)
+    value_as_concept_id = models.ForeignKey(ObservationValue, db_column='value_as_concept_id', null=True, blank=True)
     unit_concept_id = models.IntegerField(null=True, blank=True)
     range_low = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     range_high = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     observation_type_concept_id = models.ForeignKey(ObservationType, db_column='observation_type_concept_id')
     associated_provider = models.ForeignKey('Provider', null=True, blank=True)
     visit_occurrence = models.ForeignKey('VisitOccurrence', null=True, blank=True)
-    relevant_condition_concept_id = models.IntegerField(null=True, blank=True)
+    relevant_condition_concept_id = models.ForeignKey(ObservationCondition, db_column='relevant_condition_concept_id', null=True, blank=True)
     observation_source_value = models.CharField(max_length=50, blank=True, null=True)
     units_source_value = models.CharField(max_length=50, blank=True, null=True)
     class Meta:
