@@ -1,20 +1,8 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#     * Rearrange models' order
-#     * Make sure each model has one field with primary_key=True
-# Feel free to rename the models, but don't rename db_table values or field names.
-#
-# Also note: You'll have to insert the output of 'django-admin.py sqlcustom [appname]'
-# into your database.
 from __future__ import unicode_literals
 
 from datetime import datetime
 from django.db import models
-from south.db import dbs
-if 'omop' in dbs:
-    db = dbs['omop']
-else:
-    from south.db import db
+from pytz import utc
 
 DELETED = 'D'
 UPDATED = 'U'
@@ -26,9 +14,20 @@ INVALID_REASON_CHOICES = (
 class ViewManager(models.Manager):
 
     def refresh(self):
-        db.start_transaction()
-        db.refresh_view(self.model)
-        db.commit_transaction()
+        table_name = self.model._meta.db_table
+        src_table_name, src_field_name = self.model.SRC_TABLE_PKEY.split('.')
+        join_table_name, join_field_name = self.model.JOIN_TABLE_FIELD.split('.')
+        fields_str = ', '.join([fld.column for fld in self.model._meta.fields])
+        params = [table_name, fields_str, fields_str, src_table_name,
+                  join_table_name, src_table_name, src_field_name,
+                  join_table_name, join_field_name]
+
+        from django.db import connections
+        self.delete()
+        connection = connections.get('omop', connections['default'])
+        cusor = connection.cursor()
+        cursor.execute("INSERT INTO %s (%s) SELECT DISTINCT %s FROM %s JOIN"
+                       " %s ON %s.%s = %s.%s", params)
 
 class CareSite(models.Model):
     care_site_id = models.IntegerField(primary_key=True)
@@ -60,7 +59,7 @@ class ConceptBase(models.Model):
     concept_class = models.CharField(max_length=60)
     concept_code = models.CharField(max_length=40)
     valid_start_date = models.DateTimeField()
-    valid_end_date = models.DateTimeField(default=lambda:datetime(2099, 12, 31, 0, 0, 0))
+    valid_end_date = models.DateTimeField(default=datetime(2099, 12, 31, 0, 0, 0, 0, utc))
     invalid_reason = models.CharField(max_length=1, blank=True, null=True, choices=INVALID_REASON_CHOICES)
 
     objects = models.Manager()
@@ -160,6 +159,12 @@ class ObservationValue(ConceptBase):
     class Meta(ConceptBase.Meta):
         db_table = 'observation_value'
 
+class ObservationUnit(ConceptBase):
+    vocabulary_id = models.IntegerField()
+    JOIN_TABLE_FIELD = 'observation.unit_concept_id'
+    class Meta(ConceptBase.Meta):
+        db_table = 'observation_unit'
+
 class ConceptAncestor(models.Model):
     ancestor_concept = models.ForeignKey(Concept, related_name='conceptancestor_descendant_set')
     descendant_concept = models.ForeignKey(Concept, related_name='conceptancestor_ancestor_set')
@@ -179,7 +184,7 @@ class ConceptRelationship(models.Model):
     concept_id_2 = models.ForeignKey(Concept, db_column='concept_id_2', related_name='conceptrelationship_1_set')
     relationship = models.ForeignKey('Relationship')
     valid_start_date = models.DateTimeField()
-    valid_end_date = models.DateTimeField(default=lambda:datetime(2099, 12, 31, 0, 0, 0))
+    valid_end_date = models.DateTimeField(default=datetime(2099, 12, 31, 0, 0, 0, 0, utc))
     invalid_reason = models.CharField(max_length=1, blank=True, null=True, choices=INVALID_REASON_CHOICES)
     class Meta:
         db_table = 'concept_relationship'
@@ -220,6 +225,7 @@ class ConditionOccurrence(models.Model):
         db_table = 'condition_occurrence'
 
 class Death(models.Model):
+    id = models.AutoField(primary_key=True)
     person = models.ForeignKey('Person')
     death_date = models.DateTimeField()
     death_type_concept_id = models.IntegerField()
@@ -323,7 +329,7 @@ class Observation(models.Model):
     value_as_number = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     value_as_string = models.CharField(max_length=60, blank=True, null=True)
     value_as_concept_id = models.ForeignKey(ObservationValue, db_column='value_as_concept_id', null=True, blank=True)
-    unit_concept_id = models.IntegerField(null=True, blank=True)
+    unit_concept_id = models.ForeignKey(ObservationUnit, db_column='unit_concept_id', null=True, blank=True)
     range_low = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     range_high = models.DecimalField(null=True, max_digits=14, decimal_places=3, blank=True)
     observation_type_concept_id = models.ForeignKey(ObservationType, db_column='observation_type_concept_id')
@@ -353,7 +359,7 @@ class Organization(models.Model):
     organization_id = models.IntegerField(primary_key=True)
     place_of_service_concept_id = models.IntegerField(null=True, blank=True)
     location = models.ForeignKey(Location, null=True, blank=True)
-    organization_source_value = models.CharField(max_length=50)
+    organization_source_value = models.CharField(max_length=50, null=True, blank=True)
     place_of_service_source_value = models.CharField(max_length=50, blank=True, null=True)
     class Meta:
         db_table = 'organization'
@@ -455,7 +461,7 @@ class SourceToConceptMap(models.Model):
     mapping_type = models.CharField(max_length=20, blank=True, null=True)
     primary_map = models.CharField(max_length=1, blank=True, null=True, choices=PRIMARY_MAP_CHOICES)
     valid_start_date = models.DateTimeField()
-    valid_end_date = models.DateTimeField(default=lambda:datetime(2099, 12, 31, 0, 0, 0))
+    valid_end_date = models.DateTimeField(default=datetime(2099, 12, 31, 0, 0, 0, 0, utc))
     invalid_reason = models.CharField(max_length=1, blank=True, null=True, choices=INVALID_REASON_CHOICES)
     class Meta:
         db_table = 'source_to_concept_map'
